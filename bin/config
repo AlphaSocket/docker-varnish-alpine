@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# exit if a command fails
+set -e
+
+# Setup folder
+mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown $CONFIG_VARNISH_USER $CONFIG_VARNISH_WORKING_DIR
+
+# Create server conf
+cp $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER $CONFIG_PATHS_CONF_VARNISH_SERVER
+
+
+
+exit 0

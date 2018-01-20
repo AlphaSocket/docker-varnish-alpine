@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+
+# exit if a command fails
+set -e
+
+# Install varnish server
+apk add --no-cache varnish
+
+
+
+exit 0

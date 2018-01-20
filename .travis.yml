@@ -1,0 +1,47 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - sudo apt update && sudo apt install curl libfcgi0ldbl -y
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTER;
+  - docker build -t 03192859189254/varnish-alpine:latest .
+
+script:
+# Starting varnish container
+ - TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=$TEST_NAME -p 127.0.0.1:30080:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest )
+ - TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
+
+# Testing varnish container
+ - if [ ! "$TEST_CONTAINER_VARNISH_STATUS" = "true" ]; then
+        echo "Varnish container failed, print logs and exiting\n";
+        docker logs $TEST_CONTAINER_VARNISH_ID;
+        exit 1;
+    fi
+# Starting nginx container
+ - TEST_CONTAINER_NGINX_ID=$( docker run -d --net=container:$TEST_NAME 03192859189254/dockerized-nginx-tester:latest )
+ - TEST_CONTAINER_NGINX_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_NGINX_ID)
+
+# Testing nginx container
+ - if [ ! "$TEST_CONTAINER_NGINX_STATUS" = "true" ]; then
+        echo "Httpd container failed, print logs and exiting\n";
+        docker logs $TEST_CONTAINER_NGINX_ID;
+        exit 1;
+    fi
+# Testing varnish service
+ - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html -o /dev/null -w '%{http_code}\n' )
+
+# Checking exit code
+ - if [ ! "$HTTP_CODE" = "200" ]; then
+        echo "### Test failed, received HTTP code ${HTTP_CODE} printing log\n";
+        docker logs $TEST_CONTAINER_VARNISH_ID;
+        exit 1;
+    fi
+
+
+after_success:
+  - if [ "$DOCKER_USERNAME" ]; then
+        docker tag 03192859189254/varnish-alpine:latest ${DOCKER_REGISTER}/${DOCKER_USERNAME}/varnish-alpine:latest;
+        docker push ${DOCKER_REGISTER}/${DOCKER_USERNAME}/varnish-alpine:latest;
+    fi
