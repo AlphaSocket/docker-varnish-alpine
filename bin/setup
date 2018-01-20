@@ -4,8 +4,8 @@
 # exit if a command fails
 set -e
 
-# Install varnish server
-apk add --no-cache varnish
+# Install dependencies
+apk add --no-cache $SETUP_DEPENDENCIES_BUILD $SETUP_DEPENDENCIES_RUNTIME
 
 
 

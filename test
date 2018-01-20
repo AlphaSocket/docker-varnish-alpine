@@ -8,14 +8,31 @@
 set -e
 
 CURL=$(which curl)
+DOCKER=$(which docker)
 
 if [ CURL = '' ]; then
     echo 'The package curl is required\n'
     exit 1
 fi
 
+if [ DOCKER = '' ]; then
+    echo 'Docker is required\n'
+    exit 1
+fi
+
+echo "#\n# Building image\n#\n"
+docker build --no-cache -t 03192859189254/varnish-alpine:latest .
+
+echo "#\n# Cleaning docker\n#\n"
+running_containers=$(docker ps -aq)
+if [ "$running_containers" ] 
+    then
+        docker stop $running_containers -t 0 && docker system prune -f
+fi
+
+echo "#\n# Running test\n#\n"
 # Starting varnish container
-TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=$TEST_NAME -p 127.0.0.1:30080:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest )
+TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine -p 127.0.0.1:30080:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest )
 TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
 
 # Testing varnish container
@@ -25,7 +42,7 @@ if [ ! "$TEST_CONTAINER_VARNISH_STATUS" = "true" ]; then
     exit 1;
 fi
 # Starting nginx container
-TEST_CONTAINER_NGINX_ID=$( docker run -d --net=container:$TEST_NAME 03192859189254/dockerized-nginx-tester:latest )
+TEST_CONTAINER_NGINX_ID=$( docker run -d --net=container:varnish-alpine 03192859189254/dockerized-nginx-tester:latest )
 TEST_CONTAINER_NGINX_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_NGINX_ID)
 
 # Testing nginx container
@@ -36,6 +53,7 @@ if [ ! "$TEST_CONTAINER_NGINX_STATUS" = "true" ]; then
 fi
 # Testing varnish service
 HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html -o /dev/null -w '%{http_code}\n' )
+HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html )
 
 # Checking exit code
 if [ ! "$HTTP_CODE" = "200" ]; then
@@ -43,6 +61,17 @@ if [ ! "$HTTP_CODE" = "200" ]; then
     docker logs $TEST_CONTAINER_VARNISH_ID;
     exit 1;
 fi
+# Checking varnish headers
+if [ grep -q "X-Varnish" <<< "$HTTP_HEADERS" ]; then
+    echo "### Test failed, varnish headers not found during HTTP request. Printing log\n";
+    docker logs $TEST_CONTAINER_VARNISH_ID;
+    exit 1;
+fi
+# Success
+echo "### Test Succeeded, received HTTP code ${HTTP_CODE} printing log\n"
+docker logs $TEST_CONTAINER_VARNISH_ID
+exit 1
+
 
 
 exit 0
