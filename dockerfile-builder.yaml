@@ -32,13 +32,18 @@ build:
       valueFromCommand: 'env=$(echo $BUILD_BRANCH | cut -d \- -f 2); [ "$env" = "$BUILD_VERSION" ] && echo $GENERAL_KEYS_PRD || echo $env'
     # Varnish
     varnish:
+      conf:
+        path: /etc/varnish/default.vcl
       port: 80
     # Docker
     dockerfile:
       image: alpine:latest
       ports:
         main: $BUILD_VARNISH_PORT
-      cmd: varnishd
+      cmd: varnishd -Ff $BUILD_VARNISH_CONF_PATH
+      #cmd: varnishd -f /etc/varnish/default.vcl
+  import:
+    - "templates:/usr/local/templates"
 
 #
 # Setup process injected in dockerfile
@@ -46,14 +51,14 @@ build:
 setup:
   # Setup env 
   envvars:
-    varnish:
-      conf:
-        path: /etc/varnish/
+    dependencies:
+      build: gettext
+      runtime: varnish
   # Setup Processes
   processes:
-    - title: "Install varnish server"
+    - title: "Install dependencies"
       commands: 
-        - "apk add --no-cache varnish"
+        - "apk add --no-cache $SETUP_DEPENDENCIES_BUILD $SETUP_DEPENDENCIES_RUNTIME"
 
 #
 # Config process run just before the entrypoint
@@ -66,7 +71,7 @@ config:
       port: $BUILD_VARNISH_PORT
       memory: 1M
       working:
-        dir: /var/lib/varnish/`hostname`
+        dir: /var/lib/varnish/$(hostname)
       backend: 
         address: webserver.cluster 
         port: 80
@@ -77,7 +82,7 @@ config:
           server: /usr/local/templates/default.vcl
       conf:
         varnish:
-          server: ${SETUP_VARNISH_CONF}/default.vcl
+          server: $BUILD_VARNISH_CONF_PATH
       
   processes:
     - title: "Setup folder"
@@ -86,10 +91,12 @@ config:
 
     - title: "Create server conf"
       commands:
-       - cp $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER $CONFIG_PATHS_CONF_VARNISH_SERVER
+       #- cp $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER $CONFIG_PATHS_CONF_VARNISH_SERVER
+       - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
 
 test:
   envvars:
+    name: $BUILD_NAME
     port: 30080
     dockerfile:
       tag: 
@@ -145,6 +152,7 @@ test:
     - title: "Testing varnish service"
       commands:
         - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
+        - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_PORT}/index.html )
 
     - title: "Checking exit code"
       shell_condition: '! "$HTTP_CODE" = "200"'
@@ -153,3 +161,15 @@ test:
         - docker logs $TEST_CONTAINER_VARNISH_ID
         - exit 1
 
+    - title: "Checking varnish headers"
+      shell_condition: 'grep -q "X-Varnish" <<< "$HTTP_HEADERS"'
+      commands:
+        - echo "### Test failed, varnish headers not found during HTTP request. Printing log\n" 
+        - docker logs $TEST_CONTAINER_VARNISH_ID
+        - exit 1
+
+    - title: "Success"
+      commands:
+        - echo "### Test Succeeded, received HTTP code ${HTTP_CODE} printing log\n" 
+        - docker logs $TEST_CONTAINER_VARNISH_ID
+        - exit 1
