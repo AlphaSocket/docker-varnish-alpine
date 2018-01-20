@@ -3,8 +3,8 @@ import directors;
 import std;
 
 backend default {
-    .host = ${CONFIG_VARNISH_BACKEND_ADDRESS};
-    .port = ${CONFIG_VARNISH_BACKEND_PORT};
+    .host = "$CONFIG_VARNISH_BACKEND_ADDRESS";
+    .port = "$CONFIG_VARNISH_BACKEND_PORT";
 }
 
 acl purge {
@@ -67,7 +67,7 @@ sub vcl_recv {
 
 sub vcl_backend_response {
     # retry a few times if backend is down
-    if (beresp.status == 503 && bereq.retries < ${CONFIG_VARNISH_BACKEND_RETRIES} ) {
+    if (beresp.status == 503 && bereq.retries < $CONFIG_VARNISH_BACKEND_RETRIES ) {
        return(retry);
     }
 
@@ -133,7 +133,7 @@ sub vcl_hash {
 
 #sub vcl_backend_error {
 #    # Custom error page
-#    if (beresp.status == 503 && bereq.retries == ${CONFIG_VARNISH_BACKEND_RETRIES}) {
+#    if (beresp.status == 503 && bereq.retries == $CONFIG_VARNISH_BACKEND_RETRIES) {
 #        synthetic(std.fileread("/etc/varnish/error503.html"));
 #        return(deliver);
 #    }
