@@ -171,5 +171,3 @@ test:
     - title: "Success"
       commands:
         - echo "### Test Succeeded, received HTTP code ${HTTP_CODE} printing log\n" 
-        - docker logs $TEST_CONTAINER_VARNISH_ID
-        - exit 1
