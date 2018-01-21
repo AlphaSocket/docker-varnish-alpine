@@ -1,6 +1,7 @@
 project: 
-  title: &project_title Varnish service on latest alpine image
+  title: &project_title alphasocket/dockerized-varnish-alpine
   codename: &project_codename varnish-alpine
+  description: Varnish service on latest alpine image
 
 #
 # Init builder
@@ -52,13 +53,13 @@ setup:
   # Setup env 
   envvars:
     dependencies:
-      build: gettext
-      runtime: varnish
+      setup: varnish
+      config: gettext
   # Setup Processes
   processes:
     - title: "Install dependencies"
       commands: 
-        - "apk add --no-cache $SETUP_DEPENDENCIES_BUILD $SETUP_DEPENDENCIES_RUNTIME"
+        - "apk add --no-cache $SETUP_DEPENDENCIES_CONFIG $SETUP_DEPENDENCIES_SETUP"
 
 #
 # Config process run just before the entrypoint
