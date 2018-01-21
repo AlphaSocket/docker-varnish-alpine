@@ -3,6 +3,8 @@
 #
 FROM alpine:latest
 
+ARG BUILD_COMMIT BUILD_TIME
+
 ENV \
 	GENERAL_DOCKER_USER="03192859189254" \
 	GENERAL_KEYS_TRUE="True" \
@@ -11,7 +13,7 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_NAME="varnish-alpine" \
 	BUILD_BRANCH="latest" \
-	BUILD_COMMIT="90c12ef" \
+	BUILD_COMMIT="2c86d5c" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
@@ -47,5 +49,5 @@ ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["/usr/local/bin/config && varnishd -Ff $BUILD_VARNISH_CONF_PATH"]
 
 LABEL \
-    org.label-schema.vcs-ref=90c12ef \
+    org.label-schema.vcs-ref=2c86d5c \
     org.label-schema.vcs-url="https://github.com/AlphaSocket/dockerized-varnish-alpine"
