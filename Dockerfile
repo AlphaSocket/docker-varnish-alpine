@@ -11,7 +11,7 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_NAME="varnish-alpine" \
 	BUILD_BRANCH="latest" \
-	BUILD_COMMIT="cdc9af8" \
+	BUILD_COMMIT="d0a46ab" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
@@ -19,8 +19,8 @@ ENV \
 	BUILD_DOCKERFILE_IMAGE="alpine:latest" \
 	BUILD_DOCKERFILE_PORTS_MAIN="80" \
 	BUILD_DOCKERFILE_CMD="varnishd -Ff /etc/varnish/default.vcl" \
-	SETUP_DEPENDENCIES_BUILD="gettext" \
-	SETUP_DEPENDENCIES_RUNTIME="varnish" \
+	SETUP_DEPENDENCIES_SETUP="varnish" \
+	SETUP_DEPENDENCIES_CONFIG="gettext" \
 	CONFIG_VARNISH_USER="varnish" \
 	CONFIG_VARNISH_PORT="80" \
 	CONFIG_VARNISH_MEMORY="1M" \
