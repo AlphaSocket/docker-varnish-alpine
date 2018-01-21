@@ -9,7 +9,7 @@ GENERAL_KEYS_PRD='prd'
 # Build
 BUILD_NAME='varnish-alpine'
 BUILD_BRANCH='latest'
-BUILD_COMMIT='e3b0d4a'
+BUILD_COMMIT='90c12ef'
 BUILD_VERSION='latest'
 BUILD_ENV='prd'
 BUILD_VARNISH_CONF_PATH='/etc/varnish/default.vcl'
