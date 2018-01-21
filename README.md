@@ -1,10 +1,6 @@
 # alphasocket/dockerized-varnish-alpine
 #### varnish-alpine
-<<<<<<< HEAD
-https://travis-ci.org/AlphaSocket/dockerized-apache-alpine.svg?branch=latest [![](https://images.microbadger.com/badges/image/03192859189254/varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest ) [![](https://images.microbadger.com/badges/version/03192859189254/varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest)
-=======
 [![](https://travis-ci.org/AlphaSocket/dockerized-varnish-alpine.svg?branch=latest )]() [![](https://images.microbadger.com/badges/image/03192859189254/varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest ) [![](https://images.microbadger.com/badges/version/03192859189254/varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest)
->>>>>>> master
 Varnish service on latest alpine image
 
 ## Branches & Versions
