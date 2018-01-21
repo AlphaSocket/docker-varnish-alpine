@@ -14,7 +14,7 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_NAME="varnish-alpine" \
 	BUILD_BRANCH="latest" \
-	BUILD_COMMIT="b65edec" \
+	BUILD_COMMIT="a1cc0a1" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
@@ -50,5 +50,5 @@ ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["/usr/local/bin/config && varnishd -Ff $BUILD_VARNISH_CONF_PATH"]
 
 LABEL \
-    org.label-schema.vcs-ref=b65edec \
+    org.label-schema.vcs-ref=a1cc0a1 \
     org.label-schema.vcs-url="https://github.com/AlphaSocket/dockerized-varnish-alpine"
