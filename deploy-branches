@@ -13,11 +13,12 @@ REPO_NAME=${BASEDIR}
 GIT_USER='alphasocket'
 CUR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 GIT_BRANCHES=$(git for-each-ref --format='%(refname:short)' refs/heads/ | xargs)
+pass=""
 
-if [ $GITHUB_PASS == '' ]; then
-    echo -ne "Set GITHUB_PASS to push branches automatically:\n GITHUB_PASS={password}\n"
+if [ -z "br1RilKpAmi2XVDyp4FN" ] ; then
+    echo -ne "Set GITHUB_PASS to push branches automatically:\n export GITHUB_PASS={password}\n"
 else
-    pass=":$GITHUB_PASS"
+    pass=":br1RilKpAmi2XVDyp4FN"
 fi
 
 #
