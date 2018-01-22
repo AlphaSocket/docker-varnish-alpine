@@ -67,7 +67,7 @@ if [ ! "$HTTP_CODE" = "200" ]; then
     exit 1;
 fi
 # Checking varnish headers
-if [ grep -q "X-Varnish" <<< "$HTTP_HEADERS" ]; then
+if [ echo "$HTTP_HEADERS" | grep -q "X-Varnish" ]; then
     echo "### Test failed, varnish headers not found during HTTP request. Printing log\n";
     docker logs $TEST_CONTAINER_VARNISH_ID;
     exit 1;
