@@ -154,6 +154,7 @@ test:
       commands:
         - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
         - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_PORT}/index.html )
+        - VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
     - title: "Checking exit code"
       shell_condition: '! "$HTTP_CODE" = "200"'
@@ -163,7 +164,7 @@ test:
         - exit 1
 
     - title: "Checking varnish headers"
-      shell_condition: 'echo "$HTTP_HEADERS" | grep -q "X-Varnish"'
+      shell_condition: '! "$VARNISH_TEST" = "Success"'
       commands:
         - echo "### Test failed, varnish headers not found during HTTP request. Printing log\n" 
         - docker logs $TEST_CONTAINER_VARNISH_ID
