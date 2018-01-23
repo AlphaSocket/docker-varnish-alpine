@@ -59,6 +59,7 @@ fi
 # Testing varnish service
 HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html -o /dev/null -w '%{http_code}\n' )
 HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html )
+VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
 # Checking exit code
 if [ ! "$HTTP_CODE" = "200" ]; then
@@ -67,7 +68,7 @@ if [ ! "$HTTP_CODE" = "200" ]; then
     exit 1;
 fi
 # Checking varnish headers
-if [ echo "$HTTP_HEADERS" | grep -q "X-Varnish" ]; then
+if [ ! "$VARNISH_TEST" = "Success" ]; then
     echo "### Test failed, varnish headers not found during HTTP request. Printing log\n";
     docker logs $TEST_CONTAINER_VARNISH_ID;
     exit 1;
