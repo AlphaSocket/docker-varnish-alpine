@@ -5,6 +5,7 @@ services:
 
 before_install:
   - sudo apt update && sudo apt install curl libfcgi0ldbl -y
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTER;
   - docker build 
         --no-cache 
         -t 03192859189254/varnish-alpine:latest
@@ -55,7 +56,6 @@ script:
 
 
 after_success:
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTER;
   - if [ "$DOCKER_USERNAME" ]; then
         docker tag 03192859189254/varnish-alpine:latest ${DOCKER_REGISTER}/${DOCKER_USERNAME}/varnish-alpine:latest;
         docker push ${DOCKER_REGISTER}/${DOCKER_USERNAME}/varnish-alpine:latest;
