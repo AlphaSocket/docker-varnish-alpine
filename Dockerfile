@@ -16,7 +16,7 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_NAME="varnish-alpine" \
 	BUILD_BRANCH="latest" \
-	BUILD_COMMIT="0a23a2a" \
+	BUILD_COMMIT="4344a3d" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
@@ -36,21 +36,29 @@ ENV \
 	CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl" \
 	CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl"
 
-ADD envvars /usr/local/envvars
-ADD bin/setup /usr/local/bin/setup
-ADD bin/config /usr/local/bin/config
+RUN if [ ! -d "/usr/local/bin/setup" ]; then \
+        mkdir -p /usr/local/bin/setup; \
+    fi \
+    && \
+    if [ ! -d "/usr/local/bin/config" ]; then \
+        mkdir -p /usr/local/bin/config; \
+    fi
+
+ADD bin/docker-config /usr/local/bin/docker-config
+ADD bin/setup /usr/local/bin/setup/1516964378
+ADD bin/config /usr/local/bin/config/1516964378
 ADD templates /usr/local/templates
 
-RUN chmod +rx /usr/local/bin/setup && \
-    chmod +rx /usr/local/bin/config && \
+RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup 
+    /usr/local/bin/setup/1516964378 
 
 EXPOSE 80 80
 
+
 ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["/usr/local/bin/config && varnishd -Ff $BUILD_VARNISH_CONF_PATH"]
+CMD ["/usr/local/bin/docker-config && varnishd -Ff $BUILD_VARNISH_CONF_PATH"]
 
 LABEL \
-    org.label-schema.vcs-ref=0a23a2a \
+    org.label-schema.vcs-ref=4344a3d \
     org.label-schema.vcs-url="https://github.com/AlphaSocket/dockerized-varnish-alpine"
