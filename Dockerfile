@@ -4,11 +4,9 @@
 FROM alpine:latest
 
 ARG BUILD_COMMIT
-ARG BUILD_TIME
+ARG BUILD_DATE
 
 ENV \
-	BUILD_COMMIT=$BUILD_COMMIT \
-	BUILD_DATE=$BUILD_DATE \
 	GENERAL_DOCKER_USER="03192859189254" \
 	GENERAL_KEYS_TRUE="True" \
 	GENERAL_KEYS_FALSE="False" \
@@ -16,7 +14,7 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_NAME="varnish-alpine" \
 	BUILD_BRANCH="latest" \
-	BUILD_COMMIT="4344a3d" \
+	BUILD_COMMIT="7b1b4aa" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
@@ -45,13 +43,13 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
     fi
 
 ADD bin/docker-config /usr/local/bin/docker-config
-ADD bin/setup /usr/local/bin/setup/1516964378
-ADD bin/config /usr/local/bin/config/1516964378
+ADD bin/setup /usr/local/bin/setup/1517140531
+ADD bin/config /usr/local/bin/config/1517140531
 ADD templates /usr/local/templates
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1516964378 
+    /usr/local/bin/setup/1517140531 
 
 EXPOSE 80 80
 
@@ -60,5 +58,5 @@ ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["/usr/local/bin/docker-config && varnishd -Ff $BUILD_VARNISH_CONF_PATH"]
 
 LABEL \
-    org.label-schema.vcs-ref=4344a3d \
+    org.label-schema.vcs-ref=7b1b4aa \
     org.label-schema.vcs-url="https://github.com/AlphaSocket/dockerized-varnish-alpine"
