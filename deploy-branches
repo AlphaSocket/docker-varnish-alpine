@@ -12,8 +12,8 @@ BASEDIR=${PWD##*/}
 REPO_NAME=${BASEDIR}
 CUR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 GIT_BRANCHES=$(git for-each-ref --format='%(refname:short)' refs/heads/ | xargs)
-GITHUB_USER=$(cmdipass get-one Github --uuid=735FA2F77D826743B4E2D7C7FC083624 --username-only 2> /dev/null)
-GITHUB_PASS=$(cmdipass get-one Github --uuid=735FA2F77D826743B4E2D7C7FC083624 --password-only 2> /dev/null)
+GITHUB_USER=$(cmdipass get-one "https://github.com/login" --uuid=735fa2f77d826743b4e2d7c7fc083624 --username-only 2> /dev/null)
+GITHUB_PASS=$(cmdipass get-one "https://github.com/login" --uuid=735fa2f77d826743b4e2d7c7fc083624 --password-only 2> /dev/null)
 pass=""
 
 if [ -z "$GITHUB_PASS" ] ; then
