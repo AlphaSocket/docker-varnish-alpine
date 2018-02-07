@@ -46,7 +46,7 @@ build:
         main: $BUILD_VARNISH_PORT
         additional:
           valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
-      cmd: varnishd -Ff $CONFIG_PATHS_CONF_VARNISH_SERVER $CONFIG_VARNISH_STARTUP_OPTIONS
+      cmd: "varnishd -Ff $CONFIG_PATHS_CONF_VARNISH_SERVER $CONFIG_VARNISH_STARTUP_OPTIONS"
       #cmd: varnishd -f /etc/varnish/default.vcl
   import:
     - "templates:/usr/local/templates"
