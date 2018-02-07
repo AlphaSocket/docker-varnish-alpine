@@ -27,7 +27,7 @@ if [ $CUR_BRANCH == $GIT_BRANCH_MASTER ] || [ $CUR_BRANCH == $GIT_BRANCH_DEVELOP
     $(which dockerfile-build)
     git add . 
     if [ -z "$(git status --porcelain)" ]; then 
-        echo -ne "Nothing to commit \n"
+        echo -ne "[$CUR_BRANCH] Nothing to commit \n"
     else
         if [ ! -z "$(git status deploy-branches --porcelain 2>/dev/null)" ]
         then
@@ -62,16 +62,11 @@ do
     git pull origin $branch
     git merge master --no-commit 
     # Remove master files
-    git add .
-    rm -f .gitignore
-    rm -f deploy-branches
-    git add .
-    git commit -m "Merged master in $branch" --allow-empty --author "$GIT_AUTHOR"
     $(which dockerfile-build)
     rm -f .gitignore
     rm -f deploy-branches
     git add .
-    git commit -m "Re-built dockerfile" --allow-empty --author "$GIT_AUTHOR"
+    git commit -m "Merged master in $branch and re-built dockerfile" --allow-empty --author "$GIT_AUTHOR"
     echo -ne "-- Updated branch $branch -- \n\n"
 done
 
