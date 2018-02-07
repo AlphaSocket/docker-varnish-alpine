@@ -19,6 +19,8 @@ Varnish service on latest alpine image
 ~~~
 CONFIG_VARNISH_USER="varnish"
 CONFIG_VARNISH_PORT="80"
+CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
+CONFIG_VARNISH_STARTUP_OPTIONS=""
 CONFIG_VARNISH_MEMORY="1M"
 CONFIG_VARNISH_WORKING_DIR="/var/lib/varnish/$(hostname)"
 CONFIG_VARNISH_BACKEND_ADDRESS="webserver.cluster"
