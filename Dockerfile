@@ -14,18 +14,23 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_NAME="varnish-alpine" \
 	BUILD_BRANCH="latest" \
-	BUILD_COMMIT="7b1b4aa" \
+	BUILD_COMMIT="7c01994" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
 	BUILD_VARNISH_PORT="80" \
+	BUILD_VARNISH_CONTROL_PANEL_ENABLED="True" \
+	BUILD_VARNISH_CONTROL_PANEL_PORT="6082" \
 	BUILD_DOCKERFILE_IMAGE="alpine:latest" \
 	BUILD_DOCKERFILE_PORTS_MAIN="80" \
-	BUILD_DOCKERFILE_CMD="varnishd -Ff /etc/varnish/default.vcl" \
+	BUILD_DOCKERFILE_PORTS_ADDITIONAL="6082" \
+	BUILD_DOCKERFILE_CMD="varnishd -Ff $CONFIG_PATHS_CONF_VARNISH_SERVER $CONFIG_VARNISH_STARTUP_OPTIONS" \
 	SETUP_DEPENDENCIES_SETUP="varnish" \
 	SETUP_DEPENDENCIES_CONFIG="gettext" \
 	CONFIG_VARNISH_USER="varnish" \
 	CONFIG_VARNISH_PORT="80" \
+	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on" \
+	CONFIG_VARNISH_STARTUP_OPTIONS="" \
 	CONFIG_VARNISH_MEMORY="1M" \
 	CONFIG_VARNISH_WORKING_DIR="/var/lib/varnish/$(hostname)" \
 	CONFIG_VARNISH_BACKEND_ADDRESS="webserver.cluster" \
@@ -43,20 +48,22 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
     fi
 
 ADD bin/docker-config /usr/local/bin/docker-config
-ADD bin/setup /usr/local/bin/setup/1517140531
-ADD bin/config /usr/local/bin/config/1517140531
-ADD templates /usr/local/templates
+ADD bin/setup /usr/local/bin/setup/1518001239
+ADD bin/config /usr/local/bin/config/1518001239
+ADD templates/default.vcl /usr/local/templates/default.vcl
+ADD templates/503.html /usr/local/templates/503.html
+
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1517140531 
+    /usr/local/bin/setup/1518001239 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 80
 
 
 ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["/usr/local/bin/docker-config && varnishd -Ff $BUILD_VARNISH_CONF_PATH"]
+CMD ["/usr/local/bin/docker-config && varnishd -Ff $CONFIG_PATHS_CONF_VARNISH_SERVER $CONFIG_VARNISH_STARTUP_OPTIONS"]
 
 LABEL \
-    org.label-schema.vcs-ref=7b1b4aa \
+    org.label-schema.vcs-ref=7c01994 \
     org.label-schema.vcs-url="https://github.com/AlphaSocket/dockerized-varnish-alpine"
