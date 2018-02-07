@@ -52,6 +52,7 @@ do
     git pull origin $branch
     git merge master --no-commit 
     # Remove master files
+    git add .
     rm -f .gitignore
     rm -f deploy-branches
     git add .
