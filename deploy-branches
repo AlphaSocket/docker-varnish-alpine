@@ -10,9 +10,10 @@ GIT_BRANCH_MASTER='master'
 GIT_BRANCH_DEVELOP='develop'
 BASEDIR=${PWD##*/}
 REPO_NAME=${BASEDIR}
-GIT_USER='alphasocket'
 CUR_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 GIT_BRANCHES=$(git for-each-ref --format='%(refname:short)' refs/heads/ | xargs)
+GITHUB_USER=$(cmdipass get-one Github --uuid=735FA2F77D826743B4E2D7C7FC083624 --username-only 2> /dev/null)
+GITHUB_PASS=$(cmdipass get-one Github --uuid=735FA2F77D826743B4E2D7C7FC083624 --password-only 2> /dev/null)
 pass=""
 
 if [ -z "$GITHUB_PASS" ] ; then
@@ -67,5 +68,5 @@ done
 # Push
 #
 git checkout $GIT_BRANCH_MASTER --force
-git push https://$GIT_USER$pass@github.com/$GIT_USER/$REPO_NAME --all
-git push https://$GIT_USER$pass@github.com/$GIT_USER/$REPO_NAME --tags
+git push https://$GITHUB_USER$pass@github.com/$GITHUB_USER/$REPO_NAME --all
+git push https://$GITHUB_USER$pass@github.com/$GITHUB_USER/$REPO_NAME --tags
