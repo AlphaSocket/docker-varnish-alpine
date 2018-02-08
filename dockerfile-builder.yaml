@@ -103,7 +103,7 @@ config:
     - title: "Append control panel option if enabled"
       shell_condition: '"$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE"'
       commands:
-        - CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS"
+        - export CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS"
 
     - title: "Create server conf"
       commands:
