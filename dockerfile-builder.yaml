@@ -4,33 +4,17 @@ project:
   description: Varnish service on latest alpine image
 
 #
-# Init builder
-#
-general:
-  envvars:
-    docker:
-      user: &general_docker_user 03192859189254 
-    keys:
-      True: "True"
-      false: "False"
-      dev: "dev"
-      prd: "prd"
-    
-#
 # Build process
 # Creates dockerfile and file used in it
 #
 build:
   envvars:
     name: *project_codename
-    branch:
-      valueFromCommand: 'git rev-parse --abbrev-ref HEAD'
-    commit:
-      valueFromCommand: 'git rev-parse --short HEAD'
-    version:
-      valueFromCommand: 'echo $BUILD_BRANCH | cut -d \- -f 1'
-    env:
-      valueFromCommand: 'env=$(echo $BUILD_BRANCH | cut -d \- -f 2); [ "$env" = "$BUILD_VERSION" ] && echo $GENERAL_KEYS_PRD || echo $env'
+    ports:
+      main:
+        valueFromParse: $BUILD_VARNISH_PORT
+      additional:
+        valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
     # Varnish
     varnish:
       conf:
@@ -39,15 +23,7 @@ build:
       control_panel:
         enabled: "True"
         port: 6082
-    # Docker
-    dockerfile:
-      image: alpine:latest
-      ports:
-        main: $BUILD_VARNISH_PORT
-        additional:
-          valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
-      cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
-      #cmd: varnishd -f /etc/varnish/default.vcl
+    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
   import:
     - "templates:/usr/local/templates"
 
@@ -60,11 +36,6 @@ setup:
     dependencies:
       setup: varnish
       config: gettext
-  # Setup Processes
-  processes:
-    - title: "Install dependencies"
-      commands: 
-        - "apk add --no-cache $SETUP_DEPENDENCIES_CONFIG $SETUP_DEPENDENCIES_SETUP"
 
 #
 # Config process run just before the entrypoint
@@ -74,7 +45,8 @@ config:
   envvars:
     varnish:
       user: varnish
-      port: $BUILD_VARNISH_PORT
+      port:
+        valueFromParse: $BUILD_VARNISH_PORT
       startup:
         options: "-Ff $CONFIG_PATHS_CONF_VARNISH_SERVER"
       memory: 1M
@@ -93,7 +65,8 @@ config:
           server: /usr/local/templates/default.vcl
       conf:
         varnish:
-          server: $BUILD_VARNISH_CONF_PATH
+          server:
+            valueFromParse: $BUILD_VARNISH_CONF_PATH
       
   processes:
     - title: "Setup folder"
@@ -111,15 +84,6 @@ config:
        - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
 
 test:
-  envvars:
-    name: $BUILD_NAME
-    port: 30080
-    dockerfile:
-      tag: 
-        user: *general_docker_user
-        name: $BUILD_NAME
-        version: $BUILD_BRANCH
-
   processes:
     #
     # Starting
@@ -128,8 +92,8 @@ test:
       commands:
         - TEST_CONTAINER_VARNISH_ID=$(
             docker run 
-              -d --name=$TEST_NAME
-              -p 127.0.0.1:${TEST_PORT}:${BUILD_DOCKERFILE_PORTS_MAIN}
+              -d --name=$TEST_CONTAINER_NAME
+              -p 127.0.0.1:${TEST_CONTAINER_PORT}:${BUILD_DOCKERFILE_PORTS_MAIN}
               -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1
               -e CONFIG_VARNISH_BACKEND_PORT=8080
               ${TEST_DOCKERFILE_TAG_USER}/${TEST_DOCKERFILE_TAG_NAME}:${TEST_DOCKERFILE_TAG_VERSION}
@@ -150,7 +114,7 @@ test:
       commands: 
         - TEST_CONTAINER_NGINX_ID=$(
             docker run 
-              -d --net=container:$TEST_NAME 
+              -d --net=container:$TEST_CONTAINER_NAME 
               03192859189254/dockerized-nginx-tester:latest
           )
         - TEST_CONTAINER_NGINX_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_NGINX_ID)
@@ -167,8 +131,8 @@ test:
     #
     - title: "Testing varnish service"
       commands:
-        - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
-        - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_PORT}/index.html )
+        - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
+        - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html )
         - VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
     - title: "Checking exit code"
