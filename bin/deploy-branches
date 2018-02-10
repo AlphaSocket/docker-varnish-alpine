@@ -61,10 +61,9 @@ do
     git checkout --force $branch
     git pull origin $branch
     git merge master --no-commit 
-    # Remove master files
+    # Remove all files
+    find . -maxdepth 1  ! -name 'dockerfile-builder.yaml' -type f
     $(which dockerfile-build)
-    rm -f .gitignore
-    rm -f deploy-branches
     git add .
     git commit -m "Merged master in $branch and re-built dockerfile" --allow-empty --author "$GIT_AUTHOR"
     echo -ne "-- Updated branch $branch -- \n\n"
