@@ -142,8 +142,8 @@ test:
     #
     - title: "Testing varnish service"
       commands:
-        - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
-        - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html )
+        - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_HOST_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
+        - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_HOST_PORT}/index.html )
         - VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
     - title: "Checking exit code"
