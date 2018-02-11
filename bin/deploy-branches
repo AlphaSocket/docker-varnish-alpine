@@ -36,7 +36,7 @@ if [ $CUR_BRANCH == $GIT_BRANCH_MASTER ] || [ $CUR_BRANCH == $GIT_BRANCH_DEVELOP
             DEPLOY_BRANCHES_CHANGED="False"
         fi
         
-        git commit -m "Rebuilt dockerfile and script" --author "$GIT_AUTHOR"
+        git commit --author "$GIT_AUTHOR"
         # If the deploy-script is modified run the new script and exit
         if [ "$DEPLOY_BRANCHES_CHANGED" = "True" ]; then
             ./deploy-branches
