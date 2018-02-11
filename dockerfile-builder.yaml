@@ -86,8 +86,9 @@ config:
 
     - title: "Create server conf"
       commands:
-       #- cp $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER $CONFIG_PATHS_CONF_VARNISH_SERVER
+       - mkdir -p $(dirname $CONFIG_PATHS_CONF_VARNISH_SERVER)
        - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
+       - ls $CONFIG_PATHS_CONF_VARNISH_SERVER
 
 test:
   envvars:
