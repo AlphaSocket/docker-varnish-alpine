@@ -58,15 +58,15 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
 
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
-ADD imports/bin/setup /usr/local/bin/setup/1518315416
-ADD imports/bin/config /usr/local/bin/config/1518315416
+ADD imports/bin/setup /usr/local/bin/setup/1518345750
+ADD imports/bin/config /usr/local/bin/config/1518345750
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1518315416 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1518345750 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 6082
 

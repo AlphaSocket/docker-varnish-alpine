@@ -50,8 +50,8 @@ if [ ! "$TEST_CONTAINER_NGINX_STATUS" = "true" ]; then
     exit 1;
 fi
 # Testing varnish service
-HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
-HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html )
+HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:30000/index.html -o /dev/null -w '%{http_code}\n' )
+HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:30000/index.html )
 VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
 # Checking exit code
