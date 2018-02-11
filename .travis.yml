@@ -11,6 +11,9 @@ addons:
             - curl
             - libfcgi0ldbl
 
+notifications:
+	webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
+
 services:
   - docker
 

@@ -90,6 +90,9 @@ config:
        - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
 
 test:
+  envvars:
+    notification:
+      webhook: https://fathomless-fjord-24024.herokuapp.com/notify
   processes:
     #
     # Starting
