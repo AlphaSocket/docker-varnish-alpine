@@ -5,8 +5,8 @@ Varnish service on latest alpine image
 
 | [![Build Status](https://semaphoreci.com/api/v1/alphasocket/dockerized-varnish-alpine/branches/latest/badge.svg)](https://semaphoreci.com/alphasocket/dockerized-varnish-alpine) | Layers | Size  |
 | ----- | ----- | ----- |
-| Dev image | [![](https://images.microbadger.com/badges/image/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest) |
-| Prd image | [![](https://images.microbadger.com/badges/image/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest) |
+| Dev image | [![](https://images.microbadger.com/badges/image/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest) |
+| Prd image | [![](https://images.microbadger.com/badges/image/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest) |
 
 ## Branches & Versions
 - latest
