@@ -46,6 +46,15 @@ setup:
 config:
   # Config env 
   envvars:
+    paths:
+      templates:
+        varnish:
+          server:
+            valueFromParse: $BUILD_PATHS_TEMPLATES_FOLDER/default.vcl
+      conf:
+        varnish:
+          server:
+            valueFromParse: $BUILD_VARNISH_CONF_PATH
     varnish:
       user: varnish
       port:
@@ -64,15 +73,6 @@ config:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
           options: "-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
-    paths:
-      templates:
-        varnish:
-          server:
-            valueFromParse: $BUILD_PATHS_TEMPLATES_FOLDER/default.vcl
-      conf:
-        varnish:
-          server:
-            valueFromParse: $BUILD_VARNISH_CONF_PATH
       
   processes:
     - title: "Setup folder"

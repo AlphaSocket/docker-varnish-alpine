@@ -35,6 +35,8 @@ ENV \
 	BUILD_PATHS_TEMPLATES_FOLDER="/usr/local/templates" \
 	SETUP_DEPENDENCIES_SETUP="varnish" \
 	SETUP_DEPENDENCIES_CONFIG="gettext" \
+	CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl" \
+	CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl" \
 	CONFIG_VARNISH_USER="varnish" \
 	CONFIG_VARNISH_PORT="80" \
 	CONFIG_VARNISH_STARTUP_OPTIONS="-Ff $CONFIG_PATHS_CONF_VARNISH_SERVER" \
@@ -44,9 +46,7 @@ ENV \
 	CONFIG_VARNISH_BACKEND_PORT="80" \
 	CONFIG_VARNISH_BACKEND_RETRIES="5" \
 	CONFIG_VARNISH_CONTROL_PANEL_ENABLED="True" \
-	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on" \
-	CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl" \
-	CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl"
+	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
 
 RUN if [ ! -d "/usr/local/bin/setup" ]; then \
         mkdir -p /usr/local/bin/setup; \
@@ -58,15 +58,15 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
 
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
-ADD imports/bin/setup /usr/local/bin/setup/1518314047
-ADD imports/bin/config /usr/local/bin/config/1518314047
+ADD imports/bin/setup /usr/local/bin/setup/1518314609
+ADD imports/bin/config /usr/local/bin/config/1518314609
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1518314047 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1518314609 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 6082
 
