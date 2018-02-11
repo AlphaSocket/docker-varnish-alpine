@@ -60,7 +60,8 @@ config:
       port:
         valueFromParse: $BUILD_VARNISH_PORT
       startup:
-        options: "-Ff $CONFIG_PATHS_CONF_VARNISH_SERVER"
+        options:
+          valueFromParse: "-Ff $CONFIG_PATHS_CONF_VARNISH_SERVER"
       memory: 1M
       working:
         dir: /var/lib/varnish/$(hostname)
