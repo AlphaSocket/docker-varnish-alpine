@@ -5,7 +5,7 @@
 #
 
 # exit if a command fails
-set -e
+set -xe
 
 CURL=$(which curl)
 DOCKER=$(which docker)
