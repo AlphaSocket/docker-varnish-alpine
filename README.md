@@ -21,6 +21,8 @@ Varnish service on latest alpine image
 
 ## Configurable envvars
 ~~~
+CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl"
+CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl"
 CONFIG_VARNISH_USER="varnish"
 CONFIG_VARNISH_PORT="80"
 CONFIG_VARNISH_STARTUP_OPTIONS="-Ff $CONFIG_PATHS_CONF_VARNISH_SERVER"
@@ -31,6 +33,4 @@ CONFIG_VARNISH_BACKEND_PORT="80"
 CONFIG_VARNISH_BACKEND_RETRIES="5"
 CONFIG_VARNISH_CONTROL_PANEL_ENABLED="True"
 CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
-CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl"
-CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl"
 ~~~
