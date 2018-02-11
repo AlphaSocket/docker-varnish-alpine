@@ -15,6 +15,7 @@ build:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
         valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
+    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
     # Varnish
     varnish:
       conf:
@@ -23,9 +24,11 @@ build:
       control_panel:
         enabled: "True"
         port: 6082
-    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
-  import:
-    - "templates:/usr/local/templates"
+    paths:
+      templates:
+        folder: /usr/local/templates
+  imports:
+    - "templates:$BUILD_PATHS_TEMPLATES_FOLDER"
 
 #
 # Setup process injected in dockerfile
@@ -57,12 +60,15 @@ config:
         port: 80
         retries: 5
       control_panel:
+        enabled:
+          valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
           options: "-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
     paths:
       templates:
         varnish:
-          server: /usr/local/templates/default.vcl
+          server:
+            valueFromParse: $BUILD_PATHS_TEMPLATES_FOLDER/default.vcl
       conf:
         varnish:
           server:
@@ -74,7 +80,7 @@ config:
         - mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown $CONFIG_VARNISH_USER $CONFIG_VARNISH_WORKING_DIR
         
     - title: "Append control panel option if enabled"
-      shell_condition: '"$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE"'
+      shell_condition: '"$CONFIG_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE"'
       commands:
         - export CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS"
 
@@ -93,10 +99,10 @@ test:
         - TEST_CONTAINER_VARNISH_ID=$(
             docker run 
               -d --name=$TEST_CONTAINER_NAME
-              -p 127.0.0.1:${TEST_CONTAINER_PORT}:${BUILD_DOCKERFILE_PORTS_MAIN}
+              -p 127.0.0.1:${TEST_HOST_PORT}:${BUILD_PORTS_MAIN}
               -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1
               -e CONFIG_VARNISH_BACKEND_PORT=8080
-              ${TEST_DOCKERFILE_TAG_USER}/${TEST_DOCKERFILE_TAG_NAME}:${TEST_DOCKERFILE_TAG_VERSION}
+              ${BUILD_USER}/${BUILD_NAME}:${BUILD_VERSION}
           )
         - TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
 
