@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Local test script to build and test docker image
+# Local test script to test docker images
 #
 
 # exit if a command fails
@@ -20,14 +20,6 @@ if [ DOCKER = '' ]; then
     exit 1
 fi
 
-echo "#\n# Building image\n#\n"
-docker build \
-    --no-cache \
-    -t 03192859189254/varnish-alpine:latest \
-    --build-arg BUILD_COMMIT=`git rev-parse --short HEAD` \
-    --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
-    .
-
 echo "#\n# Cleaning docker\n#\n"
 running_containers=$(docker ps -aq)
 if [ "$running_containers" ] 
@@ -37,7 +29,7 @@ fi
 
 echo "#\n# Running test\n#\n"
 # Starting varnish container
-TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine -p 127.0.0.1:30080:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest )
+TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine -p 127.0.0.1:30000:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest )
 TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
 
 # Testing varnish container
@@ -57,8 +49,8 @@ if [ ! "$TEST_CONTAINER_NGINX_STATUS" = "true" ]; then
     exit 1;
 fi
 # Testing varnish service
-HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html -o /dev/null -w '%{http_code}\n' )
-HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:30080/index.html )
+HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
+HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_CONTAINER_PORT}/index.html )
 VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
 # Checking exit code

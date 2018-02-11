@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Run command
+#
+set -e
+
+echo "### Start container configuration\n"
+$(which docker-config)
+echo "### Finished container configuration\n"
+
+echo "### Start container command"
+${DOCKERFILE_BUILDER_DOCKERFILE_CMD}
+exit $?
