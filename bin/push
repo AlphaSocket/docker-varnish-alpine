@@ -16,12 +16,16 @@ fi
 #
 # LOGIN
 #
-if [ ! -z "$DOCKER_PASSWORD" ] ;
-then
-    # Automated push
-    docker login -u "alphasocket" -p "$DOCKER_PASSWORD" docker.io;
-else
-    docker login -u "alphasocket" docker.io;
+LOGGED_IN=$( docker info | grep -q "Username: alphasocket" && echo "true")
+if [ "$LOGGED_IN" != "true" ];
+then 
+    if [ ! -z "$DOCKER_PASSWORD" ] ;
+    then
+        # Automated push
+        docker login -u "alphasocket" -p "$DOCKER_PASSWORD" docker.io;
+    else
+        docker login -u "alphasocket" docker.io;
+    fi
 fi
 
 #
