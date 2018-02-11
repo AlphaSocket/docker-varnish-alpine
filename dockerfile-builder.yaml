@@ -114,9 +114,11 @@ test:
     - title: "Testing varnish container"
       shell_condition: '! "$TEST_CONTAINER_VARNISH_STATUS" = "true"'
       commands:
-        - echo "Varnish container failed, print logs and exiting\n"
+        - echo "### Varnish container failed, print logs and exiting\n"
         - docker logs $TEST_CONTAINER_VARNISH_ID
         - exit 1
+      else:
+        - echo "### Varnish container is running\n" 
 
     # 
     # Run nginx
@@ -133,9 +135,11 @@ test:
     - title: "Testing nginx container"
       shell_condition: '! "$TEST_CONTAINER_NGINX_STATUS" = "true"'
       commands:
-        - echo "Httpd container failed, print logs and exiting\n"
+        - echo "### Httpd container failed, print logs and exiting\n"
         - docker logs $TEST_CONTAINER_NGINX_ID
         - exit 1
+      else:
+        - echo "### Httpd container is running\n" 
 
     #
     # TESTING
@@ -152,6 +156,9 @@ test:
         - echo "### Test failed, received HTTP code ${HTTP_CODE} printing log\n" 
         - docker logs $TEST_CONTAINER_VARNISH_ID
         - exit 1
+      else:
+        - echo "### Received HTTP code ${HTTP_CODE}\n" 
+        
 
     - title: "Checking varnish headers"
       shell_condition: '! "$VARNISH_TEST" = "Success"'
@@ -159,7 +166,5 @@ test:
         - echo "### Test failed, varnish headers not found during HTTP request. Printing log\n" 
         - docker logs $TEST_CONTAINER_VARNISH_ID
         - exit 1
-
-    - title: "Success"
-      commands:
-        - echo "### Test Succeeded, received HTTP code ${HTTP_CODE} printing log\n" 
+      else:
+        - echo "### Test Succeeded\n Varnish placed in front, Responce headers received are:\n ${HTTP_HEADERS}\n" 
