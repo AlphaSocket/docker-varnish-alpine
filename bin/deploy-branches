@@ -29,7 +29,7 @@ if [ $CUR_BRANCH == $GIT_BRANCH_MASTER ] || [ $CUR_BRANCH == $GIT_BRANCH_DEVELOP
     if [ -z "$(git status --porcelain)" ]; then 
         echo -ne "[$CUR_BRANCH] Nothing to commit \n"
     else
-        if [ ! -z "$(git status deploy-branches --porcelain 2>/dev/null)" ]
+        if [ ! -z "$(git status bin/deploy-branches --porcelain 2>/dev/null)" ]
         then
             DEPLOY_BRANCHES_CHANGED="True"
         else
@@ -39,7 +39,7 @@ if [ $CUR_BRANCH == $GIT_BRANCH_MASTER ] || [ $CUR_BRANCH == $GIT_BRANCH_DEVELOP
         git commit --author "$GIT_AUTHOR"
         # If the deploy-script is modified run the new script and exit
         if [ "$DEPLOY_BRANCHES_CHANGED" = "True" ]; then
-            ./deploy-branches
+            bin/deploy-branches
             exit 0
         fi
     fi
