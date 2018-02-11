@@ -48,6 +48,8 @@ else
     exit 1
 fi
 
+MASTER_COMMIT_MESSAGE=$(cat .git/COMMIT_EDITMSG)
+
 #
 # Deploy in other branches
 #
@@ -73,7 +75,7 @@ do
     ### 
     $(which dockerfile-build)
     git add .
-    git commit -m "Merged master in $branch and re-built dockerfile" --allow-empty --author "$GIT_AUTHOR"
+    git commit -m "$MASTER_COMMIT_MESSAGE && rebuilt dockerfile" --allow-empty --author "$GIT_AUTHOR"
     echo -ne "-- Updated branch $branch -- \n\n"
 done
 
