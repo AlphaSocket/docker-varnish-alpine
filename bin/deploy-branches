@@ -60,8 +60,9 @@ do
     echo -ne "-- Updating branch $branch -- \n"
     git checkout --force $branch
     git pull origin $branch
-    git merge master --no-commit 
-    # Remove all old files
+    # Ignoring failed merge 
+    git merge master --no-commit 2>/dev/null || true
+    # Fix retrocompatibility Remove all old files
     # find . -maxdepth 1  ! -name 'dockerfile-builder.yaml' -type f -exec rm -f {} +
     rm -f .gitignore
     rm -f envvars
@@ -69,6 +70,7 @@ do
     rm -f deploy-branches
     rm -f bin/*
     find . -maxdepth 1 -type d ! -name 'bin' ! -name 'imports' ! -name 'volumes' ! -name '.git' ! -name '.' -exec mv -t ./imports/ {} +
+    ### 
     $(which dockerfile-build)
     git add .
     git commit -m "Merged master in $branch and re-built dockerfile" --allow-empty --author "$GIT_AUTHOR"
