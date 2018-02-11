@@ -5,7 +5,8 @@
 set -e
 
 # Install dependencies
-if [ ! -z "$SETUP_DEPENDENCIES_CONFIG$SETUP_DEPENDENCIES_SETUP" ]; then
+echo "### Install dependencies...
+"if [ ! -z "$SETUP_DEPENDENCIES_CONFIG$SETUP_DEPENDENCIES_SETUP" ]; then
     apk add --no-cache $SETUP_DEPENDENCIES_CONFIG $SETUP_DEPENDENCIES_SETUP;
 fi
 
