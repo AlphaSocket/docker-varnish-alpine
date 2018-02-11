@@ -9,5 +9,5 @@ $(which docker-config)
 echo "### Finished container configuration\n"
 
 echo "### Start container command"
-${DOCKERFILE_BUILDER_DOCKERFILE_CMD}
+varnishd $CONFIG_VARNISH_STARTUP_OPTIONS
 exit $?

@@ -26,6 +26,7 @@ if [ "$running_containers" ]
     then
         docker stop $running_containers -t 0 && docker system prune -f
 fi
+echo "# Cleaned"
 
 echo "#\n# Running test\n#\n"
 # Starting varnish container
