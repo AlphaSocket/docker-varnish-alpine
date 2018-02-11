@@ -78,17 +78,17 @@ config:
     - title: "Setup folder"
       commands:
         - mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown $CONFIG_VARNISH_USER $CONFIG_VARNISH_WORKING_DIR
-        
-    - title: "Append control panel option if enabled"
-      shell_condition: '"$CONFIG_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE"'
-      commands:
-        - export CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS"
 
     - title: "Create server conf"
       commands:
        - mkdir -p $(dirname $CONFIG_PATHS_CONF_VARNISH_SERVER)
        - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
        - ls $CONFIG_PATHS_CONF_VARNISH_SERVER
+        
+    - title: "Append control panel option if enabled"
+      shell_condition: '"$CONFIG_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE"'
+      commands:
+        - export CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS"
 
 test:
   envvars:
