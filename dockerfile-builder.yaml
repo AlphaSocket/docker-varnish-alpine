@@ -23,7 +23,7 @@ build:
       port: 80
       control_panel:
         enabled:
-          valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && "$GENERAL_KEYS_TRUE" || "$GENERAL_KEYS_FALSE"'
+          valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$GENERAL_KEYS_TRUE" || echo "$GENERAL_KEYS_FALSE"'
         port: 6082
     paths:
       templates:
@@ -72,12 +72,12 @@ config:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
           options:
-            valueFromParse :"-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
+            valueFromParse: "-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
       startup:
         options:
           valueFromParse: "-F -s malloc,${CONFIG_VARNISH_MEMORY} -a :${BUILD_VARNISH_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}"
         additional:
-          valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
+          valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || echo "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
       
   processes:
     - title: "Setup folder"
