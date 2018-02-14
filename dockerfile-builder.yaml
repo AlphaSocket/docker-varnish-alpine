@@ -15,7 +15,7 @@ build:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
         valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
-    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
+    cmd: "exec varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
     # Varnish
     varnish:
       conf:
@@ -61,7 +61,8 @@ config:
         valueFromParse: $BUILD_VARNISH_PORT
       startup:
         options:
-          valueFromParse: "-Ff $CONFIG_PATHS_CONF_VARNISH_SERVER"
+          #valueFromParse: "-F -s malloc,${CONFIG_VARNISH_MEMORY} -a :80 -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}"
+          valueFromParse: "-F -f $CONFIG_PATHS_CONF_VARNISH_SERVER"
       memory: 1M
       working:
         dir: /var/lib/varnish/$(hostname)
