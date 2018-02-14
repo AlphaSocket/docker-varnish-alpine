@@ -15,7 +15,7 @@ build:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
         valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
-    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL"
+    cmd: 'eval "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL"'
     # Varnish
     varnish:
       conf:
@@ -71,11 +71,9 @@ config:
         enabled:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
-          options:
-            valueFromParse: "-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
+          options: "-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
       startup:
-        options:
-          valueFromParse: "-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}"
+        options: "-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}"
         additional:
           valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || echo "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
       
@@ -89,7 +87,6 @@ config:
       commands:
        - mkdir -p $(dirname $CONFIG_PATHS_CONF_VARNISH_SERVER)
        - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
-       - ls $CONFIG_PATHS_CONF_VARNISH_SERVER
         
 test:
   processes:
