@@ -9,8 +9,6 @@ Varnish service on latest alpine image
 | Prd image | [![](https://images.microbadger.com/badges/image/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest) |
 
 ## Branches & Versions
-- 4
-- 4-controlled
 - latest
 - latest-controlled
 
