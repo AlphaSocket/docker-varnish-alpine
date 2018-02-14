@@ -15,7 +15,7 @@ build:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
         valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
-    cmd: 'echo "$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL" | xargs -exec varnishd'
+    cmd: 'echo \"$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL\" | xargs -exec varnishd'
     # Varnish
     varnish:
       conf:

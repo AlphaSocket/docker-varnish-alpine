@@ -27,7 +27,7 @@ ENV \
 	BUILD_FROM="alpine:latest" \
 	BUILD_PORTS_MAIN="80" \
 	BUILD_PORTS_ADDITIONAL="" \
-	BUILD_CMD="echo "$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL" | xargs -exec varnishd" \
+	BUILD_CMD="echo \"$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL\" | xargs -exec varnishd" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
 	BUILD_VARNISH_PORT="80" \
 	BUILD_VARNISH_CONTROL_PANEL_ENABLED="True" \
@@ -59,15 +59,15 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
 
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
-ADD imports/bin/setup /usr/local/bin/setup/1518576453
-ADD imports/bin/config /usr/local/bin/config/1518576453
+ADD imports/bin/setup /usr/local/bin/setup/1518576615
+ADD imports/bin/config /usr/local/bin/config/1518576615
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1518576453 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1518576615 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 
 
