@@ -1,0 +1,6 @@
+README.md
+.gitignore
+dockerfile-builder.yaml
+.travis.yml
+bin
+${GENERAL_DOCKERIGNORE_ADDITIONAL}

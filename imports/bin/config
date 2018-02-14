@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# exit if a command fails
+set -e
+
+# Setup folder
+echo "### Setup folder..."
+mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown $CONFIG_VARNISH_USER $CONFIG_VARNISH_WORKING_DIR
+
+# Create server conf
+echo "### Create server conf..."
+if [ "$BUILD_ENV" != "controlled" ]; then
+    mkdir -p $(dirname $CONFIG_PATHS_CONF_VARNISH_SERVER);
+    envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER;
+    ls $CONFIG_PATHS_CONF_VARNISH_SERVER;
+fi
+
+
+exit 0

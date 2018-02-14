@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Run all configuration scripts
+#
+set -e
+
+for config_script in /usr/local/bin/config/*; 
+do
+    $config_script 1>/dev/stdout 2>/dev/stderr; 
+done;
+
+exit 0

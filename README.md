@@ -3,10 +3,10 @@
 Varnish service on latest alpine image
 
 
-| [![Build Status](https://semaphoreci.com/api/v1/alphasocket/dockerized-varnish-alpine/branches/latest/badge.svg)](https://semaphoreci.com/alphasocket/dockerized-varnish-alpine) | Layers | Size  |
+| [![Build Status](https://semaphoreci.com/api/v1/alphasocket/dockerized-varnish-alpine/branches/latest-controlled/badge.svg)](https://semaphoreci.com/alphasocket/dockerized-varnish-alpine) | Layers | Size  |
 | ----- | ----- | ----- |
-| Dev image | [![](https://images.microbadger.com/badges/image/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest) |
-| Prd image | [![](https://images.microbadger.com/badges/image/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest) |
+| Dev image | [![](https://images.microbadger.com/badges/image/03192859189254/dockerized-varnish-alpine:latest-controlled.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest-controlled ) | [![](https://images.microbadger.com/badges/version/03192859189254/dockerized-varnish-alpine:latest-controlled.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest-controlled) |
+| Prd image | [![](https://images.microbadger.com/badges/image/alphasocket/varnish-alpine:latest-controlled.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest-controlled ) | [![](https://images.microbadger.com/badges/version/alphasocket/varnish-alpine:latest-controlled.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest-controlled) |
 
 ## Branches & Versions
 - latest
@@ -31,8 +31,9 @@ CONFIG_VARNISH_WORKING_DIR="/var/lib/varnish/$(hostname)"
 CONFIG_VARNISH_BACKEND_ADDRESS="webserver.cluster"
 CONFIG_VARNISH_BACKEND_PORT="80"
 CONFIG_VARNISH_BACKEND_RETRIES="5"
-CONFIG_VARNISH_CONTROL_PANEL_ENABLED="/bin/sh: 1: False: not found"
+CONFIG_VARNISH_CONTROL_PANEL_ENABLED="/bin/sh: 1: True: not found
+/bin/sh: 1: False: not found"
 CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="valueFromParse :"-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on""
 CONFIG_VARNISH_STARTUP_OPTIONS="-F -s malloc,256m -a :80 -b webserver.cluster:80"
-CONFIG_VARNISH_STARTUP_ADDITIONAL="/bin/sh: 1: -f /etc/varnish/default.vcl: not found"
+CONFIG_VARNISH_STARTUP_ADDITIONAL="valueFromParse :"-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on""
 ~~~
