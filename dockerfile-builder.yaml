@@ -15,14 +15,15 @@ build:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
         valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
-    cmd: "exec varnishd $CONFIG_VARNISH_STARTUP_OPTIONS"
+    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL"
     # Varnish
     varnish:
       conf:
         path: /etc/varnish/default.vcl
       port: 80
       control_panel:
-        enabled: "True"
+        enabled:
+          valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && "$GENERAL_KEYS_TRUE" || "$GENERAL_KEYS_FALSE"'
         port: 6082
     paths:
       templates:
@@ -59,11 +60,7 @@ config:
       user: varnish
       port:
         valueFromParse: $BUILD_VARNISH_PORT
-      startup:
-        options:
-          #valueFromParse: "-F -s malloc,${CONFIG_VARNISH_MEMORY} -a :80 -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}"
-          valueFromParse: "-F -f $CONFIG_PATHS_CONF_VARNISH_SERVER"
-      memory: 1M
+      memory: 256m
       working:
         dir: /var/lib/varnish/$(hostname)
       backend: 
@@ -74,7 +71,13 @@ config:
         enabled:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
-          options: "-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
+          options:
+            valueFromParse :"-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
+      startup:
+        options:
+          valueFromParse: "-F -s malloc,${CONFIG_VARNISH_MEMORY} -a :${BUILD_VARNISH_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}"
+        additional:
+          valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
       
   processes:
     - title: "Setup folder"
@@ -82,23 +85,13 @@ config:
         - mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown $CONFIG_VARNISH_USER $CONFIG_VARNISH_WORKING_DIR
 
     - title: "Create server conf"
+      shell_condition: '"$BUILD_ENV" != "controlled"'
       commands:
        - mkdir -p $(dirname $CONFIG_PATHS_CONF_VARNISH_SERVER)
        - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
        - ls $CONFIG_PATHS_CONF_VARNISH_SERVER
         
-    - title: "Append control panel option if enabled"
-      shell_condition: '"$CONFIG_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE"'
-      commands:
-        - export CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS"
-      else:
-        - export CONFIG_VARNISH_STARTUP_OPTIONS="$CONFIG_VARNISH_STARTUP_OPTIONS"
-        
-
 test:
-  envvars:
-    notification:
-      webhook: https://fathomless-fjord-24024.herokuapp.com/notify
   processes:
     #
     # Starting
