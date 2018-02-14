@@ -26,11 +26,11 @@ ENV \
 	BUILD_ENV="prd" \
 	BUILD_FROM="alpine:latest" \
 	BUILD_PORTS_MAIN="80" \
-	BUILD_PORTS_ADDITIONAL="6082" \
-	BUILD_CMD="exec varnishd $CONFIG_VARNISH_STARTUP_OPTIONS" \
+	BUILD_PORTS_ADDITIONAL="" \
+	BUILD_CMD="varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_OPTIONS_ADDITIONAL" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
 	BUILD_VARNISH_PORT="80" \
-	BUILD_VARNISH_CONTROL_PANEL_ENABLED="True" \
+	BUILD_VARNISH_CONTROL_PANEL_ENABLED="/bin/sh: 1: False: not found" \
 	BUILD_VARNISH_CONTROL_PANEL_PORT="6082" \
 	BUILD_PATHS_TEMPLATES_FOLDER="/usr/local/templates" \
 	SETUP_DEPENDENCIES_SETUP="varnish" \
@@ -39,14 +39,15 @@ ENV \
 	CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl" \
 	CONFIG_VARNISH_USER="varnish" \
 	CONFIG_VARNISH_PORT="80" \
-	CONFIG_VARNISH_STARTUP_OPTIONS="-F -f /etc/varnish/default.vcl" \
-	CONFIG_VARNISH_MEMORY="1M" \
+	CONFIG_VARNISH_MEMORY="256m" \
 	CONFIG_VARNISH_WORKING_DIR="/var/lib/varnish/$(hostname)" \
 	CONFIG_VARNISH_BACKEND_ADDRESS="webserver.cluster" \
 	CONFIG_VARNISH_BACKEND_PORT="80" \
 	CONFIG_VARNISH_BACKEND_RETRIES="5" \
-	CONFIG_VARNISH_CONTROL_PANEL_ENABLED="True" \
-	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="-p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"
+	CONFIG_VARNISH_CONTROL_PANEL_ENABLED="/bin/sh: 1: False: not found" \
+	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS="valueFromParse :"-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on"" \
+	CONFIG_VARNISH_STARTUP_OPTIONS="-F -s malloc,256m -a :80 -b webserver.cluster:80" \
+	CONFIG_VARNISH_STARTUP_ADDITIONAL="/bin/sh: 1: -f /etc/varnish/default.vcl: not found"
 
 RUN if [ ! -d "/usr/local/bin/setup" ]; then \
         mkdir -p /usr/local/bin/setup; \
@@ -58,17 +59,17 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
 
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
-ADD imports/bin/setup /usr/local/bin/setup/1518569479
-ADD imports/bin/config /usr/local/bin/config/1518569479
+ADD imports/bin/setup /usr/local/bin/setup/1518574820
+ADD imports/bin/config /usr/local/bin/config/1518574820
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1518569479 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1518574820 1>/dev/stdout 2>/dev/stderr
 
-EXPOSE 80 6082
+EXPOSE 80 
 
 
 ENTRYPOINT ["/bin/sh", "-c"]
