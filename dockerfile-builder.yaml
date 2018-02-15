@@ -15,6 +15,7 @@ build:
     varnish:
       conf:
         path: /etc/varnish/default.vcl
+      host: 0.0.0.0
       port: 80
       control_panel:
         enabled:
@@ -60,6 +61,8 @@ config:
       user: varnish
       port:
         valueFromParse: $BUILD_VARNISH_PORT
+      host:
+        valueFromParse: $BUILD_VARNISH_HOST
       memory: 256m
       working:
         dir: /var/lib/varnish/$(hostname)
@@ -71,9 +74,9 @@ config:
         enabled:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
-          options: "'-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on '"
+          options: "'-T ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on '"
       startup:
-        options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT}'"
+        options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT}'"
         additional:
           options:
             valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || echo "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
