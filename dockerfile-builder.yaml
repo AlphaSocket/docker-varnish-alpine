@@ -99,7 +99,7 @@ test:
         - TEST_CONTAINER_VARNISH_ID=$(
             docker run 
               -d --name=$TEST_CONTAINER_NAME
-              -p 127.0.0.1:${TEST_HOST_PORT}:${BUILD_PORTS_MAIN}
+              -p ${TEST_HOST_PORT}:${BUILD_PORTS_MAIN}
               -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1
               -e CONFIG_VARNISH_BACKEND_PORT=8080
               ${BUILD_USER}/${BUILD_NAME}:${BUILD_VERSION}
