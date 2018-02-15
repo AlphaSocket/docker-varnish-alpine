@@ -71,9 +71,9 @@ config:
         enabled:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
-          options: "'-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on'"
+          options: "'-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on '"
       startup:
-        options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}'"
+        options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT}'"
         additional:
           options:
             valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || echo "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
