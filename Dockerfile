@@ -45,8 +45,8 @@ ENV \
 	CONFIG_VARNISH_BACKEND_PORT="80" \
 	CONFIG_VARNISH_BACKEND_RETRIES="5" \
 	CONFIG_VARNISH_CONTROL_PANEL_ENABLED="False" \
-	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS='-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on' \
-	CONFIG_VARNISH_STARTUP_OPTIONS='-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT}' \
+	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS='-T 127.0.0.1:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on ' \
+	CONFIG_VARNISH_STARTUP_OPTIONS='-F -s malloc,${CONFIG_VARNISH_MEMORY} -a 127.0.0.1:${BUILD_VARNISH_PORT}' \
 	CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS="-f /etc/varnish/default.vcl"
 
 RUN if [ ! -d "/usr/local/bin/setup" ]; then \
@@ -59,15 +59,15 @@ RUN if [ ! -d "/usr/local/bin/setup" ]; then \
 
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
-ADD imports/bin/setup /usr/local/bin/setup/1518701521
-ADD imports/bin/config /usr/local/bin/config/1518701521
+ADD imports/bin/setup /usr/local/bin/setup/1518701974
+ADD imports/bin/config /usr/local/bin/config/1518701974
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1518701521 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1518701974 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 
 
