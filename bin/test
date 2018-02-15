@@ -29,22 +29,9 @@ fi
 echo "# Cleaned"
 
 echo "#\n# Running test\n#\n"
-# Starting varnish container
-echo "### Starting varnish container..."
-TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine -p 127.0.0.1:33718:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest-controlled )
-TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
-
-# Testing varnish container
-echo "### Testing varnish container..."
-if [ ! "$TEST_CONTAINER_VARNISH_STATUS" = "true" ]; then
-    echo "### Varnish container failed, print logs and exiting\n";
-    docker logs $TEST_CONTAINER_VARNISH_ID;
-    exit 1;
-echo "### Varnish container is running\n";
-fi
 # Starting nginx container
 echo "### Starting nginx container..."
-TEST_CONTAINER_NGINX_ID=$( docker run -d --net=container:varnish-alpine 03192859189254/dockerized-nginx-tester:latest )
+TEST_CONTAINER_NGINX_ID=$( docker run -d --name=varnish-alpine-pause 03192859189254/dockerized-nginx-tester:latest )
 TEST_CONTAINER_NGINX_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_NGINX_ID)
 
 # Testing nginx container
@@ -55,10 +42,24 @@ if [ ! "$TEST_CONTAINER_NGINX_STATUS" = "true" ]; then
     exit 1;
 echo "### Httpd container is running\n";
 fi
+# Starting varnish container
+echo "### Starting varnish container..."
+TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine --net=container:varnish-alpine-pause -p 127.0.0.1:30232:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest-controlled )
+TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
+
+# Testing varnish container
+echo "### Testing varnish container..."
+if [ ! "$TEST_CONTAINER_VARNISH_STATUS" = "true" ]; then
+    echo "### Varnish container failed, print logs and exiting\n";
+    docker logs $TEST_CONTAINER_VARNISH_ID;
+    exit 1;
+echo "### Varnish container is running\n";
+fi
 # Testing varnish service
 echo "### Testing varnish service..."
-HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:33718/index.html -o /dev/null -w '%{http_code}\n' )
-HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:33718/index.html )
+sleep 3
+HTTP_CODE=$( curl -sLI 127.0.0.1:30232/index.html -o /dev/null -w '%{http_code}\n' )
+HTTP_HEADERS=$( curl -sLI 127.0.0.1:30232/index.html )
 VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
 # Checking exit code

@@ -91,14 +91,36 @@ config:
         
 test:
   processes:
+    # 
+    # Run pause-container
+    # 
+    - title: "Starting nginx container"
+      commands: 
+        - TEST_CONTAINER_NGINX_ID=$(
+            docker run -d
+              --name=${TEST_CONTAINER_NAME}-pause
+              03192859189254/dockerized-nginx-tester:latest
+          )
+        - TEST_CONTAINER_NGINX_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_NGINX_ID)
+
+    - title: "Testing nginx container"
+      shell_condition: '! "$TEST_CONTAINER_NGINX_STATUS" = "true"'
+      commands:
+        - echo "### Httpd container failed, print logs and exiting\n"
+        - docker logs $TEST_CONTAINER_NGINX_ID
+        - exit 1
+      else:
+        - echo "### Httpd container is running\n"
+        
     #
     # Starting
     #
     - title: "Starting varnish container"
       commands:
         - TEST_CONTAINER_VARNISH_ID=$(
-            docker run 
-              -d --name=$TEST_CONTAINER_NAME
+            docker run -d 
+              --name=$TEST_CONTAINER_NAME
+              --net=container:${TEST_CONTAINER_NAME}-pause
               -p 127.0.0.1:${TEST_HOST_PORT}:${BUILD_PORTS_MAIN}
               -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1
               -e CONFIG_VARNISH_BACKEND_PORT=8080
@@ -115,34 +137,16 @@ test:
       else:
         - echo "### Varnish container is running\n" 
 
-    # 
-    # Run nginx
-    # 
-    - title: "Starting nginx container"
-      commands: 
-        - TEST_CONTAINER_NGINX_ID=$(
-            docker run 
-              -d --net=container:$TEST_CONTAINER_NAME 
-              03192859189254/dockerized-nginx-tester:latest
-          )
-        - TEST_CONTAINER_NGINX_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_NGINX_ID)
-
-    - title: "Testing nginx container"
-      shell_condition: '! "$TEST_CONTAINER_NGINX_STATUS" = "true"'
-      commands:
-        - echo "### Httpd container failed, print logs and exiting\n"
-        - docker logs $TEST_CONTAINER_NGINX_ID
-        - exit 1
-      else:
-        - echo "### Httpd container is running\n" 
+    
 
     #
     # TESTING
     #
     - title: "Testing varnish service"
       commands:
-        - HTTP_CODE=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_HOST_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
-        - HTTP_HEADERS=$( sleep 1 && curl -sLI 127.0.0.1:${TEST_HOST_PORT}/index.html )
+        - sleep 3
+        - HTTP_CODE=$( curl -sLI 127.0.0.1:${TEST_HOST_PORT}/index.html -o /dev/null -w '%{http_code}\n' )
+        - HTTP_HEADERS=$( curl -sLI 127.0.0.1:${TEST_HOST_PORT}/index.html )
         - VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
     - title: "Checking exit code"
