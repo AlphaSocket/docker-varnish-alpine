@@ -27,7 +27,7 @@ build:
       main:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
-        valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
+        valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
   imports:
     - "templates:$BUILD_PATHS_TEMPLATES_FOLDER"
 
