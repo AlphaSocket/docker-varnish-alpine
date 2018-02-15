@@ -10,11 +10,6 @@ project:
 build:
   envvars:
     name: *project_codename
-    ports:
-      main:
-        valueFromParse: $BUILD_VARNISH_PORT
-      additional:
-        valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
     cmd: 'echo -n $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS | envsubst | xargs -exec varnishd '
     # Varnish
     varnish:
@@ -28,6 +23,11 @@ build:
     paths:
       templates:
         folder: /usr/local/templates
+    ports:
+      main:
+        valueFromParse: $BUILD_VARNISH_PORT
+      additional:
+        valueFromCommand: '[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
   imports:
     - "templates:$BUILD_PATHS_TEMPLATES_FOLDER"
 
