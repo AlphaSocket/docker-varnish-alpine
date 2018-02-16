@@ -4,10 +4,11 @@
 #
 set -e
 
-echo "### Start container configuration\n"
+# Configuration
 $(which docker-config)
-echo "### Finished container configuration\n"
 
-echo "### Start container command"
-echo -n $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS | envsubst | xargs -exec varnishd 
+echo "### Starting container service"
+exec 'varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS'
+
+# Container command is failed if exiting here
 exit $?

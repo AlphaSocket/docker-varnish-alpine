@@ -10,7 +10,8 @@ project:
 build:
   envvars:
     name: *project_codename
-    cmd: 'echo -n $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS | envsubst | xargs -exec varnishd '
+    #cmd: 'echo -n $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS | envsubst | xargs -exec varnishd '
+    cmd: "'varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS'"
     # Varnish
     varnish:
       conf:

@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Liveness test
+#
+set -e
+
+eval "exit 0"

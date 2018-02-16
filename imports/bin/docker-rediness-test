@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Readiness test
+#
+set -e
+
+CONTAINER_STATUS=$( cat /tmp/container_status )
+if [ "$CONTAINER_STATUS" != 'ready' ]; then
+    exit 1
+fi
+
+if [ ! -z "exit 0" ]; then
+    eval "exit 0"
+fi
+
+exit $?
