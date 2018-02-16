@@ -11,7 +11,7 @@ build:
   envvars:
     name: *project_codename
     #cmd: 'echo -n $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS | envsubst | xargs -exec varnishd '
-    cmd: "'varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS'"
+    cmd: "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS"
     # Varnish
     varnish:
       conf:
@@ -160,10 +160,15 @@ test:
         - echo "### Received HTTP code ${HTTP_CODE}\n" 
         
     - title: "Checking varnish headers"
-      shell_condition: '! "$VARNISH_TEST" = "Success"'
+      shell_condition: '"$VARNISH_TEST" = "Success"'
       commands:
+        - echo "### Test Succeeded\n Varnish placed in front, Responce headers received are:\n ${HTTP_HEADERS}\n" 
+      else:
         - echo "### Test failed, varnish headers not found during HTTP request. Printing log\n" 
         - docker logs $TEST_CONTAINER_VARNISH_ID
         - exit 1
-      else:
-        - echo "### Test Succeeded\n Varnish placed in front, Responce headers received are:\n ${HTTP_HEADERS}\n" 
+
+cache:
+  docker_images:
+    - $BUILD_FROM
+    - 03192859189254/dockerized-nginx-tester:latest
