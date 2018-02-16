@@ -31,7 +31,7 @@ echo "# Cleaned"
 echo "#\n# Running test\n#\n"
 # Starting varnish container
 echo "### Starting varnish container..."
-TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine -p 127.0.0.1:30849:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest-controlled )
+TEST_CONTAINER_VARNISH_ID=$( docker run -d --name=varnish-alpine -p 127.0.0.1:30150:80 -e CONFIG_VARNISH_BACKEND_ADDRESS=127.0.0.1 -e CONFIG_VARNISH_BACKEND_PORT=8080 03192859189254/varnish-alpine:latest-controlled )
 TEST_CONTAINER_VARNISH_STATUS=$(sleep 1 && docker inspect -f '{{.State.Running}}' $TEST_CONTAINER_VARNISH_ID)
 
 # Testing varnish container
@@ -40,7 +40,7 @@ if [ ! "$TEST_CONTAINER_VARNISH_STATUS" = "true" ]; then
     echo "### Varnish container failed, print logs and exiting\n";
     docker logs $TEST_CONTAINER_VARNISH_ID;
     exit 1;
-echo "### Varnish container is running\n";
+else echo "### Varnish container is running\n";
 fi
 # Starting nginx container
 echo "### Starting nginx container..."
@@ -53,13 +53,13 @@ if [ ! "$TEST_CONTAINER_NGINX_STATUS" = "true" ]; then
     echo "### Httpd container failed, print logs and exiting\n";
     docker logs $TEST_CONTAINER_NGINX_ID;
     exit 1;
-echo "### Httpd container is running\n";
+else echo "### Httpd container is running\n";
 fi
 # Testing varnish service
 echo "### Testing varnish service..."
 sleep 3
-HTTP_CODE=$( curl -sLI 127.0.0.1:30849/index.html -o /dev/null -w '%{http_code}\n' )
-HTTP_HEADERS=$( curl -sLI 127.0.0.1:30849/index.html )
+HTTP_CODE=$( curl -sLI 127.0.0.1:30150/index.html -o /dev/null -w '%{http_code}\n' )
+HTTP_HEADERS=$( curl -sLI 127.0.0.1:30150/index.html )
 VARNISH_TEST=$(echo "$HTTP_HEADERS" | grep -q "X-Varnish" && echo "Success")
 
 # Checking exit code
@@ -68,12 +68,14 @@ if [ ! "$HTTP_CODE" = "200" ]; then
     echo "### Test failed, received HTTP code ${HTTP_CODE} printing log\n";
     docker logs $TEST_CONTAINER_VARNISH_ID;
     exit 1;
-echo "### Received HTTP code ${HTTP_CODE}\n";
+else echo "### Received HTTP code ${HTTP_CODE}\n";
 fi
 # Checking varnish headers
 echo "### Checking varnish headers..."
 if [ "$VARNISH_TEST" = "Success" ]; then
     echo "### Test Succeeded\n Varnish placed in front, Responce headers received are:\n ${HTTP_HEADERS}\n";
+else echo "### Test failed, varnish headers not found during HTTP request. Printing log\n";
+docker logs $TEST_CONTAINER_VARNISH_ID;
 exit 1;
 fi
 
