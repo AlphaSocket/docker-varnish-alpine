@@ -22,6 +22,8 @@ Varnish service on latest alpine image
 
 ## Configurable envvars
 ~~~
+CONFIG_LIVENESS_TEST="exit 0"
+CONFIG_PATHS_CONTAINER_STATUS="/tmp/container_status"
 CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl"
 CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl"
 CONFIG_VARNISH_USER="varnish"
