@@ -8,7 +8,7 @@ set -e
 $(which docker-config)
 
 echo "### Starting container service"
-exec 'varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS'
+sh -c "varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS"
 
 # Container command is failed if exiting here
 exit $?

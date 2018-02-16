@@ -10,7 +10,7 @@ if [ "$CONTAINER_STATUS" != 'ready' ]; then
 fi
 
 if [ ! -z "exit 0" ]; then
-    eval "exit 0"
+    exec "exit 0"
 fi
 
 exit $?
