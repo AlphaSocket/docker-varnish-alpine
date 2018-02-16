@@ -63,7 +63,7 @@ do
 
     echo -ne "-- Updating branch $branch -- \n"
     git checkout --force $branch
-    git pull origin $branch
+    git pull origin $branch || true
     # Ignoring failed merge 
     git merge master --no-commit 2>/dev/null || true
     # Fix retrocompatibility Remove all old files
