@@ -3,7 +3,7 @@
 Varnish service on latest alpine image
 
 
-| [![Build Status](https://semaphoreci.com/api/v1/alphasocket/dockerized-varnish-alpine/branches/latest/badge.svg)](https://semaphoreci.com/alphasocket/dockerized-varnish-alpine) | Layers | Size  |
+| [![Build Status](https://semaphoreci.com/api/v1/alphasocket/dockerized-varnish-alpine/branches/latest/badge.svg)](https://semaphoreci.com/alphasocket/dockerized-varnish-alpine) | Size / Layers | Version |
 | ----- | ----- | ----- |
 | Dev image | [![](https://images.microbadger.com/badges/image/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/03192859189254/dockerized-varnish-alpine:latest.svg)](https://microbadger.com/images/03192859189254/varnish-alpine:latest) |
 | Prd image | [![](https://images.microbadger.com/badges/image/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest ) | [![](https://images.microbadger.com/badges/version/alphasocket/varnish-alpine:latest.svg)](https://microbadger.com/images/alphasocket/varnish-alpine:latest) |
@@ -22,7 +22,18 @@ Varnish service on latest alpine image
 
 ## Configurable envvars
 ~~~
-CONFIG_LIVENESS_TEST="exit 0"
+CONFIG_REDINESS_TEST="true"
+CONFIG_LIVENESS_TEST="true"
+CONFIG_GROUPS_ADDITIONAL_ID="1001"
+CONFIG_GROUPS_ADDITIONAL_NAME=""
+CONFIG_GROUPS_MAIN_ID="1087"
+CONFIG_GROUPS_MAIN_NAME="varnish"
+CONFIG_USERS_ADDITIONAL_ID="1001"
+CONFIG_USERS_ADDITIONAL_NAME=""
+CONFIG_USERS_ADDITIONAL_GROUPS=""
+CONFIG_USERS_MAIN_ID="1087"
+CONFIG_USERS_MAIN_NAME="varnish"
+CONFIG_USERS_MAIN_GROUPS="varnish"
 CONFIG_PATHS_CONTAINER_STATUS="/tmp/container_status"
 CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl"
 CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl"
