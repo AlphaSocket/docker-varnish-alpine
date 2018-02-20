@@ -12,9 +12,9 @@ if [ DOCKER = '' ]; then
 fi
 
 echo "#\n# Warming cache\n#\n"
-for image in "alpine:latest 03192859189254/dockerized-nginx-tester:latest"
+for image in alpine:latest 03192859189254/dockerized-nginx-tester:latest
 do 
-    docker pull ${image} 1>/dev/null;
+    docker pull ${image} 1>/dev/null & true;
 done
 
 exit 0

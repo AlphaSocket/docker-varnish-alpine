@@ -4,4 +4,4 @@
 #
 set -e
 
-eval "exit 0"
+sh -c "true"
