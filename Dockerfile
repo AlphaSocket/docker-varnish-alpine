@@ -19,14 +19,12 @@ ENV \
 	GENERAL_KEYS_PRD="prd" \
 	BUILD_USER="03192859189254" \
 	BUILD_REGISTRY="docker.io" \
-	BUILD_NAME="varnish-alpine" \
 	BUILD_REPO="https://github.com/alphaSocket/dockerized-varnish-alpine" \
 	BUILD_BRANCH="latest" \
 	BUILD_VERSION="latest" \
 	BUILD_ENV="prd" \
 	BUILD_FROM="alpine:latest" \
-	BUILD_PORTS_MAIN="80" \
-	BUILD_PORTS_ADDITIONAL="" \
+	BUILD_NAME="varnish-alpine" \
 	BUILD_CMD="varnishd $CONFIG_VARNISH_STARTUP_OPTIONS $CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS" \
 	BUILD_VARNISH_CONF_PATH="/etc/varnish/default.vcl" \
 	BUILD_VARNISH_HOST="0.0.0.0" \
@@ -34,9 +32,25 @@ ENV \
 	BUILD_VARNISH_CONTROL_PANEL_ENABLED="False" \
 	BUILD_VARNISH_CONTROL_PANEL_PORT="6082" \
 	BUILD_PATHS_TEMPLATES_FOLDER="/usr/local/templates" \
+	BUILD_PORTS_MAIN="80" \
+	BUILD_PORTS_ADDITIONAL="" \
+	SETUP_PATHS_BINARIES="/usr/local/bin" \
+	SETUP_PATHS_SETUP="/usr/local/bin/setup" \
+	SETUP_PATHS_CONFIG="/usr/local/bin/config" \
 	SETUP_DEPENDENCIES_SETUP="varnish" \
 	SETUP_DEPENDENCIES_CONFIG="gettext" \
-	CONFIG_LIVENESS_TEST="exit 0" \
+	CONFIG_REDINESS_TEST="true" \
+	CONFIG_LIVENESS_TEST="true" \
+	CONFIG_GROUPS_ADDITIONAL_ID="1001" \
+	CONFIG_GROUPS_ADDITIONAL_NAME="" \
+	CONFIG_GROUPS_MAIN_ID="1087" \
+	CONFIG_GROUPS_MAIN_NAME="varnish" \
+	CONFIG_USERS_ADDITIONAL_ID="1001" \
+	CONFIG_USERS_ADDITIONAL_NAME="" \
+	CONFIG_USERS_ADDITIONAL_GROUPS="" \
+	CONFIG_USERS_MAIN_ID="1087" \
+	CONFIG_USERS_MAIN_NAME="varnish" \
+	CONFIG_USERS_MAIN_GROUPS="varnish" \
 	CONFIG_PATHS_CONTAINER_STATUS="/tmp/container_status" \
 	CONFIG_PATHS_TEMPLATES_VARNISH_SERVER="/usr/local/templates/default.vcl" \
 	CONFIG_PATHS_CONF_VARNISH_SERVER="/etc/varnish/default.vcl" \
@@ -52,28 +66,19 @@ ENV \
 	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS='-T ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on ' \
 	CONFIG_VARNISH_STARTUP_OPTIONS='-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT}' \
 	CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS="-f /etc/varnish/default.vcl"
-
-RUN if [ ! -d "/usr/local/bin/setup" ]; then \
-        mkdir -p /usr/local/bin/setup; \
-    fi \
-    && \
-    if [ ! -d "/usr/local/bin/config" ]; then \
-        mkdir -p /usr/local/bin/config; \
-    fi
-
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
 ADD imports/bin/docker-rediness-test /usr/local/bin/docker-rediness-test
 ADD imports/bin/docker-liveness-test /usr/local/bin/docker-liveness-test
-ADD imports/bin/setup /usr/local/bin/setup/1518786658
-ADD imports/bin/config /usr/local/bin/config/1518786658
+ADD imports/bin/setup /usr/local/bin/setup/1519170395
+ADD imports/bin/config /usr/local/bin/config/1519170395
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1518786658 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1519170395 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 
 

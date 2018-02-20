@@ -49,6 +49,15 @@ setup:
 config:
   # Config env 
   envvars:
+    groups:
+      main:
+        id: 1087
+        name: 'varnish'
+    users:
+      main: 
+        id: 1087
+        name: 'varnish'
+        groups: 'varnish'
     paths:
       templates:
         varnish:
