@@ -71,15 +71,15 @@ ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
 ADD imports/bin/docker-rediness-test /usr/local/bin/docker-rediness-test
 ADD imports/bin/docker-liveness-test /usr/local/bin/docker-liveness-test
-ADD imports/bin/setup /usr/local/bin/setup/1519245480
-ADD imports/bin/config /usr/local/bin/config/1519245480
+ADD imports/bin/setup /usr/local/bin/setup/1519245706
+ADD imports/bin/config /usr/local/bin/config/1519245706
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1519245480 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1519245706 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 
 
