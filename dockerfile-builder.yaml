@@ -86,7 +86,7 @@ config:
         startup:
           options: "'-T ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on '"
       startup:
-        options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT}'"
+        options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT} -j unix,user=${CONFIG_USERS_MAIN_NAME},ccgroup=${CONFIG_GROUPS_MAIN_NAME} '"
         additional:
           options:
             valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS" || echo "-f $CONFIG_PATHS_CONF_VARNISH_SERVER"'
@@ -99,8 +99,9 @@ config:
     - title: "Create server conf"
       shell_condition: '"$BUILD_ENV" != "controlled"'
       commands:
-       - mkdir -p $(dirname $CONFIG_PATHS_CONF_VARNISH_SERVER)
-       - envsubst < $CONFIG_PATHS_TEMPLATES_VARNISH_SERVER > $CONFIG_PATHS_CONF_VARNISH_SERVER
+       - mkdir -p $(dirname "$CONFIG_PATHS_CONF_VARNISH_SERVER")
+       - envsubst < "$CONFIG_PATHS_TEMPLATES_VARNISH_SERVER" > "$CONFIG_PATHS_CONF_VARNISH_SERVER"
+       - chown ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "$CONFIG_PATHS_CONF_VARNISH_SERVER"
         
 test:
   processes:

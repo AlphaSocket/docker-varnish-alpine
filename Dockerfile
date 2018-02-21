@@ -64,21 +64,21 @@ ENV \
 	CONFIG_VARNISH_BACKEND_RETRIES="5" \
 	CONFIG_VARNISH_CONTROL_PANEL_ENABLED="False" \
 	CONFIG_VARNISH_CONTROL_PANEL_STARTUP_OPTIONS='-T ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on ' \
-	CONFIG_VARNISH_STARTUP_OPTIONS='-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT}' \
+	CONFIG_VARNISH_STARTUP_OPTIONS='-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT} -j unix,user=${CONFIG_USERS_MAIN_NAME},ccgroup=${CONFIG_GROUPS_MAIN_NAME} ' \
 	CONFIG_VARNISH_STARTUP_ADDITIONAL_OPTIONS="-f /etc/varnish/default.vcl"
 ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
 ADD imports/bin/docker-rediness-test /usr/local/bin/docker-rediness-test
 ADD imports/bin/docker-liveness-test /usr/local/bin/docker-liveness-test
-ADD imports/bin/setup /usr/local/bin/setup/1519170395
-ADD imports/bin/config /usr/local/bin/config/1519170395
+ADD imports/bin/setup /usr/local/bin/setup/1519171786
+ADD imports/bin/config /usr/local/bin/config/1519171786
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
 
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1519170395 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1519171786 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80 
 
