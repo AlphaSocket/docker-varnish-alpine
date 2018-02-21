@@ -100,7 +100,7 @@ config:
       commands:
        - mkdir -p $(dirname "$CONFIG_PATHS_CONF_VARNISH_SERVER")
        - envsubst < "$CONFIG_PATHS_TEMPLATES_VARNISH_SERVER" > "$CONFIG_PATHS_CONF_VARNISH_SERVER"
-       - chown ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "$CONFIG_PATHS_CONF_VARNISH_SERVER"
+       - chown -R ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "/etc/varnish"
         
 test:
   processes:
