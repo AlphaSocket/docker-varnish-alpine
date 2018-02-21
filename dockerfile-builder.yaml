@@ -93,7 +93,7 @@ config:
   processes:
     - title: "Setup folder"
       commands:
-        - mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown $CONFIG_VARNISH_USER $CONFIG_VARNISH_WORKING_DIR
+        - mkdir -p $CONFIG_VARNISH_WORKING_DIR && chown -R ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} $CONFIG_VARNISH_WORKING_DIR
 
     - title: "Create server conf"
       shell_condition: '"$BUILD_ENV" != "controlled"'
