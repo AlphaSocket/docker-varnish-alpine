@@ -1,14 +1,12 @@
 #!/bin/sh
-#
-
-# exit if a command fails
 set -e
 
-# Install dependencies
-echo "### Install dependencies..."
-if [ ! -z "$SETUP_DEPENDENCIES_CONFIG$SETUP_DEPENDENCIES_SETUP" ]; then
-    apk add --no-cache $SETUP_DEPENDENCIES_CONFIG $SETUP_DEPENDENCIES_SETUP;
-fi
+# Install all dependencies
+echo "### Install all dependencies..."
+apk add --no-cache $BUILDER_DEPENDENCIES $SETUP_DEPENDENCIES_SETUP $SETUP_DEPENDENCIES_CONFIG $SETUP_DEPENDENCIES_RUNTIME
+
+
+
 
 
 exit 0
