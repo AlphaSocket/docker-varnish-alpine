@@ -40,8 +40,7 @@ setup:
   # Setup env 
   envvars:
     dependencies:
-      setup: varnish
-      config: gettext
+      runtime: varnish
 
 #
 # Config process run just before the entrypoint
