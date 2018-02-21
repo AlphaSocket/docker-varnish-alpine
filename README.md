@@ -14,10 +14,8 @@ Varnish service on latest alpine image
 
 
 ## Packages installed
-- Setup dependencies:
+- Runtime dependencies:
   + varnish
-- Config dependencies:
-  + gettext
 
 
 ## Configurable envvars
