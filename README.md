@@ -14,6 +14,17 @@ Varnish service on latest alpine image
 
 
 ## Packages installed
+- Setup dependencies:
+  + alpine-sdk
+  + pkgconfig
+  + curl
+  + make
+  + automake
+  + autoconf
+  + libmicrohttpd-dev
+  + curl-dev
+  + varnish-dev
+  + python-docutils
 - Runtime dependencies:
   + varnish
 
