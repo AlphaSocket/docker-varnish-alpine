@@ -47,14 +47,19 @@ setup:
   # Setup env 
   envvars:
     dependencies:
-      build: unzip make
+      build:
+      setup: alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev python-docutils
       runtime: varnish
   processes:
     - title: "Setup varnish-agent"
       commands:
-        - mkdir -p /tmp/agent_building
-        - cd /tmp/agent_building
-        - curl https://github.com/varnish/vagent2/archive/master.zip 
+        - latest_release=$( curl --silent "https://api.github.com/repos/varnish/vagent2/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' )
+        - cd /tmp
+        - wget https://github.com/varnish/vagent2/archive/$latest_release.tar.gz
+        - tar zxvf "$latest_release.tar.gz"
+        - cd "vagent2-$latest_release/" && ./autogen.sh && ./configure && make && make install
+        - cd /
+        - rm -rf /tmp/$latest_release
     
 
 #
