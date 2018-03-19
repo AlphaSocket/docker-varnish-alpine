@@ -15,13 +15,19 @@ build:
     # Varnish
     varnish:
       conf:
-        path: /etc/varnish/default.vcl
+        paths:
+          main: /etc/varnish/default.vcl
+          agent: /etc/varnish/agent/config.js
+          agent_secrets: /etc/varnish/agent_secret
       host: 0.0.0.0
       port: 80
       control_panel:
         enabled:
           valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$GENERAL_KEYS_TRUE" || echo "$GENERAL_KEYS_FALSE"'
         port: 6082
+      agent:
+        enabled: "True"
+        port: 6085
     paths:
       templates:
         folder: /usr/local/templates
@@ -29,7 +35,8 @@ build:
       main:
         valueFromParse: $BUILD_VARNISH_PORT
       additional:
-        valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
+        #valueFromCommand: '[ "$BUILD_ENV" = "controlled" ] && echo "$BUILD_VARNISH_CONTROL_PANEL_PORT" || echo ""'
+        valueFromCommand: 'additional="";[ "$BUILD_VARNISH_CONTROL_PANEL_ENABLED" = "$GENERAL_KEYS_TRUE" ] && additional="$additional $BUILD_VARNISH_CONTROL_PANEL_PORT"; [ "$BUILD_VARNISH_AGENT_ENABLED" = "$GENERAL_KEYS_TRUE" ] && additional="$additional $BUILD_VARNISH_AGENT_PORT"; echo "$additional"'
   imports:
     - "templates:$BUILD_PATHS_TEMPLATES_FOLDER"
 
@@ -40,7 +47,15 @@ setup:
   # Setup env 
   envvars:
     dependencies:
+      build: unzip make
       runtime: varnish
+  processes:
+    - title: "Setup varnish-agent"
+      commands:
+        - mkdir -p /tmp/agent_building
+        - cd /tmp/agent_building
+        - curl https://github.com/varnish/vagent2/archive/master.zip 
+    
 
 #
 # Config process run just before the entrypoint
@@ -62,10 +77,17 @@ config:
         varnish:
           server:
             valueFromParse: $BUILD_PATHS_TEMPLATES_FOLDER/default.vcl
+          agent:
+            valueFromParse: $BUILD_PATHS_TEMPLATES_FOLDER/agent_config.js
       conf:
         varnish:
           server:
-            valueFromParse: $BUILD_VARNISH_CONF_PATH
+            valueFromParse: $BUILD_VARNISH_CONF_PATHS_MAIN
+          agent:
+            valueFromParse: $BUILD_VARNISH_CONF_PATHS_AGENT
+          agent_secrets:
+            valueFromParse: $BUILD_VARNISH_CONF_PATHS_AGENT_SECRETS
+
     varnish:
       user: varnish
       port:
@@ -84,6 +106,9 @@ config:
           valueFromParse: $BUILD_VARNISH_CONTROL_PANEL_ENABLED
         startup:
           options: "'-T ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_CONTROL_PANEL_PORT} -b ${CONFIG_VARNISH_BACKEND_ADDRESS}:${CONFIG_VARNISH_BACKEND_PORT} -p cli_buffer=16384 -p feature=+esi_ignore_other_elements -p vcc_allow_inline_c=on '"
+      agent:
+        user: varnish_agent_user
+        pass: varnish_agent_pass
       startup:
         options: "'-F -s malloc,${CONFIG_VARNISH_MEMORY} -a ${BUILD_VARNISH_HOST}:${BUILD_VARNISH_PORT} -j unix,user=${CONFIG_USERS_MAIN_NAME},ccgroup=${CONFIG_GROUPS_MAIN_NAME} '"
         additional:
@@ -100,8 +125,18 @@ config:
       commands:
        - mkdir -p $(dirname "$CONFIG_PATHS_CONF_VARNISH_SERVER")
        - envsubst < "$CONFIG_PATHS_TEMPLATES_VARNISH_SERVER" > "$CONFIG_PATHS_CONF_VARNISH_SERVER"
-       - chown -R ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "/etc/varnish"
+       
+    - title: "Create varnish agent config"
+      shell_condition: '"$BUILD_VARNISH_AGENT_ENABLED" = "$GENERAL_KEYS_TRUE"'
+      commands:
+        - envsubst < "$CONFIG_PATHS_TEMPLATES_VARNISH_AGENT" > "$CONFIG_PATHS_CONF_VARNISH_AGENT"
+        - echo "$CONFIG_VARNISH_AGENT_USER:$CONFIG_VARNISH_AGENT_PASS" >> "$CONFIG_PATHS_CONF_VARNISH_AGENT_SECRETS"
+        - chmod 700 "$CONFIG_PATHS_CONF_VARNISH_AGENT_SECRETS"
         
+    - title: "Fix conf ownership"
+      commands:
+        - chown -R ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "/etc/varnish"
+       
 test:
   processes:
     #
