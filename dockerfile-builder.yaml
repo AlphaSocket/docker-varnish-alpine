@@ -48,7 +48,7 @@ setup:
   envvars:
     dependencies:
       build:
-      setup: alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev python-docutils
+      setup: alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev py-docutils
       runtime: varnish
   processes:
     - title: "Setup varnish-agent"

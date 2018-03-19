@@ -24,7 +24,7 @@ Varnish service on latest alpine image
   + libmicrohttpd-dev
   + curl-dev
   + varnish-dev
-  + python-docutils
+  + py-docutils
 - Runtime dependencies:
   + varnish
 
