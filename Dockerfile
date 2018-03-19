@@ -43,7 +43,7 @@ ENV \
 	SETUP_PATHS_CONFIG="/usr/local/bin/config" \
 	SETUP_DEPENDENCIES_CONFIG="" \
 	SETUP_DEPENDENCIES_BUILD="" \
-	SETUP_DEPENDENCIES_SETUP="alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev python-docutils" \
+	SETUP_DEPENDENCIES_SETUP="alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev py-docutils" \
 	SETUP_DEPENDENCIES_RUNTIME="varnish" \
 	CONFIG_REDINESS_TEST="true" \
 	CONFIG_LIVENESS_TEST="true" \
@@ -81,8 +81,8 @@ ADD imports/bin/docker-config /usr/local/bin/docker-config
 ADD imports/bin/docker-run /usr/local/bin/docker-run
 ADD imports/bin/docker-rediness-test /usr/local/bin/docker-rediness-test
 ADD imports/bin/docker-liveness-test /usr/local/bin/docker-liveness-test
-ADD imports/bin/setup /usr/local/bin/setup/1521475279
-ADD imports/bin/config /usr/local/bin/config/1521475279
+ADD imports/bin/setup /usr/local/bin/setup/1521475399
+ADD imports/bin/config /usr/local/bin/config/1521475399
 ADD imports/templates/agent_config.js /usr/local/templates/agent_config.js
 ADD imports/templates/default.vcl /usr/local/templates/default.vcl
 ADD imports/templates/503.html /usr/local/templates/503.html
@@ -90,7 +90,7 @@ ADD imports/templates/503.html /usr/local/templates/503.html
 
 RUN chmod +x -R /usr/local/bin && \
     sync && \
-    /usr/local/bin/setup/1521475279 1>/dev/stdout 2>/dev/stderr
+    /usr/local/bin/setup/1521475399 1>/dev/stdout 2>/dev/stderr
 
 EXPOSE 80  6082 6085
 
