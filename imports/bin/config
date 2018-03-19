@@ -12,8 +12,18 @@ echo "### Create server conf..."
 if [ "$BUILD_ENV" != "controlled" ]; then
     mkdir -p $(dirname "$CONFIG_PATHS_CONF_VARNISH_SERVER");
     envsubst < "$CONFIG_PATHS_TEMPLATES_VARNISH_SERVER" > "$CONFIG_PATHS_CONF_VARNISH_SERVER";
-    chown -R ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "/etc/varnish";
 fi
+# Create varnish agent config
+echo "### Create varnish agent config..."
+if [ "$BUILD_VARNISH_AGENT_ENABLED" = "$GENERAL_KEYS_TRUE" ]; then
+    envsubst < "$CONFIG_PATHS_TEMPLATES_VARNISH_AGENT" > "$CONFIG_PATHS_CONF_VARNISH_AGENT";
+    echo "$CONFIG_VARNISH_AGENT_USER:$CONFIG_VARNISH_AGENT_PASS" >> "$CONFIG_PATHS_CONF_VARNISH_AGENT_SECRETS";
+    chmod 700 "$CONFIG_PATHS_CONF_VARNISH_AGENT_SECRETS";
+fi
+# Fix conf ownership
+echo "### Fix conf ownership..."
+chown -R ${CONFIG_USERS_MAIN_NAME}:${CONFIG_GROUPS_MAIN_NAME} "/etc/varnish"
+
 
 
 exit 0
