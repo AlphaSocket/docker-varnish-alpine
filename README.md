@@ -25,6 +25,8 @@ Varnish service on latest alpine image
   + curl-dev
   + varnish-dev
   + py-docutils
+  + gcc
+  + git
 - Runtime dependencies:
   + varnish
 
