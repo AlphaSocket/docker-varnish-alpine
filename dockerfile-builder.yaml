@@ -48,18 +48,20 @@ setup:
   envvars:
     dependencies:
       build:
-      setup: alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev py-docutils
+      setup: alpine-sdk pkgconfig curl make automake autoconf libmicrohttpd-dev curl-dev varnish-dev py-docutils gcc git 
       runtime: varnish
   processes:
     - title: "Setup varnish-agent"
       commands:
         - latest_release=$( curl --silent "https://api.github.com/repos/varnish/vagent2/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' )
-        - cd /tmp
-        - wget https://github.com/varnish/vagent2/archive/$latest_release.tar.gz
-        - tar zxvf "$latest_release.tar.gz"
-        - cd "vagent2-$latest_release/" && ./autogen.sh && ./configure && make && make install
-        - cd /
-        - rm -rf /tmp/$latest_release
+        - git clone https://github.com/varnish/vagent2 /tmp/vagent2
+        - cd /tmp/vagent2
+        - git checkout $latest_release
+        #- wget https://github.com/varnish/vagent2/archive/$latest_release.tar.gz
+        #- tar zxvf "$latest_release.tar.gz"
+        #- cd "vagent2-$latest_release/" && ./autogen.sh && ./configure && make && make install
+        #- cd /
+        #- rm -rf /tmp/$latest_release
     
 
 #
